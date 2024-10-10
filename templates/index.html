@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Missions</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // Activate tooltip
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Afficher les informations associées à la mission
+            $('.view-details').click(function() {
+                var missionId = $(this).data('id');
+                
+                // Cacher toutes les sections
+                $('.details-section').hide();
+                
+                // Afficher uniquement la section correspondant à la mission
+                $('#details-' + missionId).show();
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container-xl mt-5">
+    <!-- Section Missions -->
+    <div class="table-responsive mb-5">
+        <div class="table-title">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h2>Manage <b>Missions</b></h2>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <button onclick="window.location.href='/add_mission'" class="btn btn-success">
+                        <i class="material-icons">&#xE147;</i> <span>Add New Mission</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Titre de Mission</th>
+                    <th>Destination</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mission in missions %}
+                <tr>
+                    <td>{{ mission.titre }}</td>
+                    <td>{{ mission.destination }}</td>
+                    <td>
+                        <a href="#" class="view-details" data-id="{{ mission._id }}" data-toggle="tooltip" title="View Details">
+                            <i class="material-icons">visibility</i>
+                        </a>
+                        <a href="{{ url_for('edit_mission', id=mission._id) }}" class="edit" data-toggle="tooltip" title="Edit">
+                            <i class="material-icons">edit</i>
+                        </a>
+                        <form action="{{ url_for('delete_mission', id=mission._id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="delete" data-toggle="tooltip" title="Delete">
+                                <i class="material-icons">delete</i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <!-- Section Détails de la Mission -->
+                <tr class="details-section" id="details-{{ mission._id }}" style="display:none;">
+                    <td colspan="3">
+                        <div class="mb-3">
+                            <h4>Personnels Affectés</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nom et Prénom</th>
+                                        <th>Mat</th>
+                                        <th>Fonction</th>
+                                        <th>Direction</th>
+                                        <th>CIN</th>
+                                        <th>N° Tel</th>
+                                        <th>RIB</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for personnel in personnels if personnel.mission_id == mission._id %}
+                                    <tr>
+                                        <td>{{ personnel.nom }} {{ personnel.prenom }}</td>
+                                        <td>{{ personnel.mat }}</td>
+                                        <td>{{ personnel.fonction }}</td>
+                                        <td>{{ personnel.direction }}</td>
+                                        <td>{{ personnel.cin }}</td>
+                                        <td>{{ personnel.tel }}</td>
+                                        <td>{{ personnel.rib }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mb-3">
+                            <h4>Voitures Affectées</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Matricule</th>
+                                        <th>Marque</th>
+                                        <th>Chauffeur</th>
+                                        <th>Montant de Gasoil</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for voiture in voitures if voiture.mission_id == mission._id %}
+                                    <tr>
+                                        <td>{{ voiture.matricule }}</td>
+                                        <td>{{ voiture.marque }}</td>
+                                        <td>{{ voiture.chauffeur }}</td>
+                                        <td>{{ voiture.montant_gasoil }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mb-3">
+                            <h4>Projets Associés</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nom du Projet</th>
+                                        <th>Chef de Projet</th>
+                                        <th>Client</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for projet in projets if projet.mission_id == mission._id %}
+                                    <tr>
+                                        <td>{{ projet.nom }}</td>
+                                        <td>{{ projet.chef_projet }}</td>
+                                        <td>{{ projet.client }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="container">
+    <form action="{{ url_for('logout') }}" method="post">
+        <button type="submit" class="btn btn-danger btn-block mt-3">Logout</button>
+    </form>
+</div>
+</body>
+</html>

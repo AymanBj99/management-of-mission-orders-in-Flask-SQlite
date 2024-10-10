@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Mission</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Add a New Mission</h1>
+        <form action="{{ url_for('add_mission') }}" method="post">
+            <div class="form-group">
+                <label for="title">Mission Title:</label>
+                <input type="text" id="title" name="title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="destination">Destination:</label>
+                <input type="text" id="destination" name="destination" class="form-control" required>
+            </div>
+            <hr>
+            <h3>Personnel Details</h3>
+            <div class="form-group">
+                <label for="personnel_name">Name:</label>
+                <input type="text" id="personnel_name" name="personnel_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="matricule">Matricule:</label>
+                <input type="text" id="matricule" name="matricule" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="function">Function:</label>
+                <input type="text" id="function" name="function" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="direction">Direction:</label>
+                <input type="text" id="direction" name="direction" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="cin">CIN:</label>
+                <input type="text" id="cin" name="cin" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="rib">RIB:</label>
+                <input type="text" id="rib" name="rib" class="form-control" required>
+            </div>
+            <hr>
+            <h3>Vehicle Details</h3>
+            <div class="form-group">
+                <label for="vehicle_matricule">Vehicle Matricule:</label>
+                <input type="text" id="vehicle_matricule" name="vehicle_matricule" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="vehicle_brand">Vehicle Brand:</label>
+                <input type="text" id="vehicle_brand" name="vehicle_brand" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="vehicle_driver">Driver:</label>
+                <input type="text" id="vehicle_driver" name="vehicle_driver" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="gasoil_amount">Gasoil Amount:</label>
+                <input type="text" id="gasoil_amount" name="gasoil_amount" class="form-control" required>
+            </div>
+            <hr>
+            <h3>Project Details</h3>
+            <div class="form-group">
+                <label for="project_name">Project Name:</label>
+                <input type="text" id="project_name" name="project_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="project_leader">Project Leader:</label>
+                <input type="text" id="project_leader" name="project_leader" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="client_name">Client Name:</label>
+                <input type="text" id="client_name" name="client_name" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Mission</button>
+        </form>
+    </div>
+</body>
+</html>
