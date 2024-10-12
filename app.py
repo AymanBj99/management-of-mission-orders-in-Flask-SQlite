@@ -16,7 +16,7 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-
+    
 
 # Modèle pour le Personnel
 class Personnel(db.Model):
@@ -82,78 +82,133 @@ class Mission(db.Model):
         return f'<Mission {self.titre} - {self.destination}>'
     
 
+## Modèle pour les utilisateurs
+class Utilisateur(db.Model):
+    __tablename__ = 'utilisateurs'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    
+    def __repr__(self):
+        return f'<Utilisateur {self.username}>'
+
+    
+
+# Route de connexion
+@app.route('/')
+def index():
+    if 'username' in session:
+        # Récupérer l'utilisateur connecté
+        username = session['username']
+        user = User.query.filter_by(username=username).first()
+
+        # Vérifier si l'utilisateur est un admin (ici, on compare avec des admins définis manuellement)
+        admin_users = ['admin1', 'admin2']  # Liste des utilisateurs admins définis manuellement
+
+        if user and username in admin_users:
+            # Si c'est un admin, rediriger vers l'interface admin
+            return redirect(url_for('admin'))
+        elif user:
+            # Si c'est un employé, rediriger vers l'interface employé
+            return redirect(url_for('employee'))
+        else:
+            flash('Utilisateur non trouvé', 'error')
+            return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
     if request.method == 'POST':
-        session['username']= request.form['username']
-        session['password']= request.form['password']
-
-        user = User.query.filter_by(username=session['username']).first()
-
-        if user is None or not check_password_hash(user.password_hash, session['password']):
-            error = 'Incorrect username or password. Please try again.'
-        else:
+        username = request.form['username']
+        password = request.form['password']
+        
+        # Récupérer l'utilisateur par son nom d'utilisateur
+        user = User.query.filter_by(username=username).first()
+        
+        if user and check_password_hash(user.password_hash, password):
             session['username'] = user.username
-            return redirect(url_for('admin'))
+            flash('Connexion réussie', 'success')
+            return redirect(url_for('index'))  # Rediriger vers la page d'accueil après connexion
+        else:
+            flash('Nom d\'utilisateur ou mot de passe invalide', 'error')
+    
+    return render_template('login.html')  # Afficher le formulaire de connexion
 
-    return render_template('login.html', error=error)
 
-
-
-
+# Route d'inscription
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    error = None
     if request.method == 'POST':
-        username =  request.form['username']
+        username = request.form['username']
         email = request.form['email']
         password = request.form['password']
 
-
-        # check if the user already exists
+        # Vérifier si l'utilisateur existe déjà
         existing_user = User.query.filter_by(username=username).first()
+
         if existing_user is None:
+            # Hachage du mot de passe
             password_hash = generate_password_hash(password)
-            new_user = User(username=username,email=email, password_hash=password_hash)
+            # Créer un nouvel utilisateur
+            new_user = User(username=username, email=email, password_hash=password_hash)
             db.session.add(new_user)
             db.session.commit()
+            flash('Inscription réussie, vous pouvez vous connecter', 'success')
             return redirect(url_for('login'))
-
         else:
-            error = 'The username already exists. Please try again.'
+            flash('Le nom d\'utilisateur existe déjà, veuillez en choisir un autre', 'error')
 
-    return render_template('register.html', error=error)
+    return render_template('register.html')
 
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
-    if request.method == 'POST':
-        # Logique pour ajouter une nouvelle mission
-        titre = request.form['titre']
-        destination = request.form['destination']
-        personnel_id = request.form['personnel_id']
-        voiture_id = request.form['voiture_id']
-        projet_id = request.form['projet_id']
 
-        new_mission = Mission(titre=titre, destination=destination, 
-                              personnel_id=personnel_id, voiture_id=voiture_id, projet_id=projet_id)
-        db.session.add(new_mission)
+# Insérer les administrateurs manuellement
+def insert_admins():
+    # Liste des administrateurs à insérer
+    admins = [
+        {'username': 'admin1', 'email': 'admin5@example.com', 'password_hash': generate_password_hash('password1')},
+        {'username': 'admin2', 'email': 'admin4@example.com', 'password_hash': generate_password_hash('password2')}
+    ]
+
+    for admin in admins:
+        # Vérifier si un utilisateur avec cet email existe déjà
+        existing_user = User.query.filter_by(email=admin['email']).first()
+        
+        if existing_user:
+            print(f"L'utilisateur avec l'email {admin['email']} existe déjà, il ne sera pas ajouté.")
+        else:
+            # Si l'utilisateur n'existe pas, l'ajouter
+            new_admin = User(username=admin['username'], email=admin['email'], password_hash=admin['password_hash'])
+            db.session.add(new_admin)
+
+    try:
         db.session.commit()
-        flash('Mission ajoutée avec succès !')
-        return redirect(url_for('admin'))
+        print("Les administrateurs ont été ajoutés avec succès.")
+    except Exception as e:
+        db.session.rollback()
+        print(f"Une erreur est survenue lors de l'ajout des administrateurs : {e}")
 
-    missions = Mission.query.all()
-    personnels = Personnel.query.all()
-    voitures = Voiture.query.all()
-    projets = Projet.query.all()
 
-    return render_template('admin.html', missions=missions, personnels=personnels, 
-                           voitures=voitures, projets=projets)
+@app.route('/admin', methods=['GET'])
+def admin():
+    missions = Mission.query.all()  # Récupérez toutes les missions de la base de données
+    return render_template('admin.html', missions=missions)
+
+
+
+
+@app.route('/employee', methods=['GET'])
+def employee():
+    missions = Mission.query.all()  # Récupérez toutes les missions de la base de données
+    return render_template('employee.html', missions=missions)
+
 
 # Exécution de la création des tables
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Crée toutes les tables définies par les modèles
+        db.create_all()
+        insert_admins() 
     app.run(debug=True)
-
-
