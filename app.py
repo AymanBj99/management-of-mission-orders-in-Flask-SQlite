@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from modele import User
+from modele import User, Mission
 from db import db, app
 from admin import insert_admins
 
@@ -20,7 +20,7 @@ def index():
 
         if user and username in admin_users:
             # Si c'est un admin, rediriger vers l'interface admin
-            return redirect(url_for('admin'))
+            return redirect(url_for('gerer_missions'))
         elif user:
             # Si c'est un employé, rediriger vers l'interface employé
             return redirect(url_for('employee'))
@@ -29,6 +29,32 @@ def index():
             return redirect(url_for('login'))
     else:
         return redirect(url_for('login'))
+
+
+@app.route('/gerer_missions', methods=['GET', 'POST'])
+def gerer_missions():
+    if request.method == 'POST':
+        # Logique pour créer une nouvelle mission
+        titre = request.form['titre']
+        destination = request.form['destination']
+        personnel_id = request.form['personnel_id']
+        voiture_id = request.form['voiture_id']
+        projet_id = request.form['projet_id']
+
+        # Créer une nouvelle mission
+        new_mission = Mission(titre=titre, destination=destination,
+                              personnel_id=personnel_id, voiture_id=voiture_id,
+                              projet_id=projet_id)
+        db.session.add(new_mission)
+        db.session.commit()
+        flash('Mission ajoutée avec succès', 'success')
+        return redirect(url_for('gerer_missions'))
+
+    # Si c'est une requête GET, récupérez toutes les missions et affichez-les
+    missions = Mission.query.all()  # Récupérer toutes les missions existantes
+    return render_template('missions.html', missions=missions)
+
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
