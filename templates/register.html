@@ -1,33 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
 </head>
 <body>
-<div class="container">
-    <div class="Title mt-7"><h2 >Register</h2></div>
-    <form method="post" action="{{ url_for('register') }}">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
+    <h1>Inscription</h1>
     {% if error %}
-        <div class="alert alert-danger mt-3" role="alert">
-         {{ error }}
-        </div>
+        <p style="color: red;">{{ error }}</p>
     {% endif %}
-</div>
+    <form method="POST">
+        <label for="username">Nom d'utilisateur:</label>
+        <input type="text" id="username" name="username" required><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+
+        <label for="password">Mot de passe:</label>
+        <input type="password" id="password" name="password" required><br>
+
+
+        <input type="submit" value="S'inscrire">
+    </form>
+    <p>Vous avez déjà un compte ? <a href="{{ url_for('login') }}">Connectez-vous ici</a>.</p>
 </body>
 </html>

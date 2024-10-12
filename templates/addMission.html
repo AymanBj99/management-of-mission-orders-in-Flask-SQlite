@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter une Mission</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Ajouter une Mission</h2>
+        <form action="{{ url_for('add_mission') }}" method="POST">
+            <div class="form-group">
+                <label for="responsable">Responsable</label>
+                <input type="text" class="form-control" id="responsable" name="responsable" required>
+            </div>
+
+            <div class="form-group">
+                <label for="accompagnants">Accompagnants</label>
+                <input type="text" class="form-control" id="accompagnants" name="accompagnants">
+            </div>
+
+            <div class="form-group">
+                <label for="destination">Destination</label>
+                <input type="text" class="form-control" id="destination" name="destination" required>
+            </div>
+
+            <div class="form-group">
+                <label for="transport">Transport</label>
+                <input type="text" class="form-control" id="transport" name="transport" required>
+            </div>
+
+            <div class="form-group">
+                <label for="date_debut">Date Début</label>
+                <input type="date" class="form-control" id="date_debut" name="date_debut" required>
+            </div>
+
+            <div class="form-group">
+                <label for="date_fin">Date Fin</label>
+                <input type="date" class="form-control" id="date_fin" name="date_fin" required>
+            </div>
+
+            <div class="form-group">
+                <label for="etat">État</label>
+                <input type="text" class="form-control" id="etat" name="etat" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Ajouter Mission</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -3,61 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration des Missions</title>
+    <title>Tableau de bord Admin</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header img {
+            max-height: 80px;
+        }
+        .header .options {
+            display: flex;
+            gap: 15px;
+        }
+        .header .options button {
+            width: 200px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Administration des Missions</h1>
+    <div class="container">
+        <!-- En-tête avec logo et boutons -->
+        <div class="header">
+            <!-- Logo de l'entreprise -->
+            <div class="logo">
+                <img src="logo.png" alt="Logo de l'entreprise">
+            </div>
 
-    <form method="POST">
-        <h2>Ajouter une Mission</h2>
-        <label>Titre:</label>
-        <input type="text" name="titre" required>
-        <label>Destination:</label>
-        <input type="text" name="destination" required>
-        <label>Personnel:</label>
-        <select name="personnel_id">
-            {% for personnel in personnels %}
-            <option value="{{ personnel.id }}">{{ personnel.nom }} {{ personnel.prenom }}</option>
-            {% endfor %}
-        </select>
-        <label>Voiture:</label>
-        <select name="voiture_id">
-            {% for voiture in voitures %}
-            <option value="{{ voiture.id }}">{{ voiture.marque }} ({{ voiture.matricule }})</option>
-            {% endfor %}
-        </select>
-        <label>Projet:</label>
-        <select name="projet_id">
-            {% for projet in projets %}
-            <option value="{{ projet.id }}">{{ projet.nom_projet }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Ajouter Mission</button>
-    </form>
+            <!-- Boutons pour les options "Gérer les missions" et "Gérer les utilisateurs" -->
+            <div class="options">
+                <button class="btn btn-primary" onclick="window.location.href='/missions'">Gérer les Missions</button>
+                <button class="btn btn-primary" onclick="window.location.href='/utilisateurs'">Gérer les Utilisateurs</button>
+            </div>
+        </div>
 
-    <h2>Liste des Missions</h2>
-    <table>
-        <tr>
-            <th>Titre</th>
-            <th>Destination</th>
-            <th>Personnel</th>
-            <th>Voiture</th>
-            <th>Projet</th>
-            <th>Actions</th>
-        </tr>
-        {% for mission in missions %}
-        <tr>
-            <td>{{ mission.titre }}</td>
-            <td>{{ mission.destination }}</td>
-            <td>{{ mission.personnel.nom }} {{ mission.personnel.prenom }}</td>
-            <td>{{ mission.voiture.marque }} ({{ mission.voiture.matricule }})</td>
-            <td>{{ mission.projet.nom_projet }}</td>
-            <td>
-                <a href="{{ url_for('edit_mission', mission_id=mission.id) }}">Modifier</a>
-                <a href="{{ url_for('delete_mission', mission_id=mission.id) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette mission ?');">Supprimer</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+        <!-- Section: Gérer les Missions -->
+        <h2>Gérer les Missions</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Responsable</th>
+                    <th>Accompagnants</th>
+                    <th>Destination</th>
+                    <th>Transport</th>
+                    <th>Date Début</th>
+                    <th>Date Fin</th>
+                    <th>État</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mission in missions %}
+                    <tr>
+                        <td>{{ mission.id }}</td>
+                        <td>{{ mission.responsable }}</td>
+                        <td>
+                            {% for accompagnant in mission.accompagnants %}
+                                {{ accompagnant.nom }} {{ accompagnant.prenom }},
+                            {% endfor %}
+                        </td>
+                        <td>{{ mission.destination }}</td>
+                        <td>{{ mission.transport }}</td>
+                        <td>{{ mission.date_debut }}</td>
+                        <td>{{ mission.date_fin }}</td>
+                        <td>{{ mission.etat }}</td>
+                        <td>
+                            <a href="{{ url_for('edit_mission', mission_id=mission._id) }}" class="btn btn-warning">Modifier</a>
+                            <a href="{{ url_for('delete_mission', mission_id=mission._id) }}" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette mission ?');">Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Bouton pour rediriger vers la page d'ajout de mission -->
+        <a href="{{ url_for('add_mission_page') }}" class="btn btn-primary">Ajouter une nouvelle Mission</a>
+    </div>
 </body>
 </html>
