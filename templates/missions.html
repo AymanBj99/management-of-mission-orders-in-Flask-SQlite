@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord Admin</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header img {
+            max-height: 80px;
+        }
+        .header .options {
+            display: flex;
+            gap: 15px;
+        }
+        .header .options button {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- En-tête avec logo et boutons -->
+        <div class="header">
+            <!-- Logo de l'entreprise -->
+            <div class="logo">
+                <img src="logo.png" alt="Logo de l'entreprise">
+            </div>
+
+            <!-- Boutons pour les options "Gérer les missions" et "Gérer les utilisateurs" -->
+            <div class="options">
+                <button class="btn btn-primary" onclick="window.location.href='/missions'">Gérer les Missions</button>
+                <button class="btn btn-primary" onclick="window.location.href='/utilisateurs'">Gérer les Utilisateurs</button>
+            </div>
+        </div>
+
+        <!-- Section: Gérer les Missions -->
+        <h2>Gérer les Missions</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Responsable</th>
+                    <th>Accompagnants</th>
+                    <th>Destination</th>
+                    <th>Transport</th>
+                    <th>Date Début</th>
+                    <th>Date Fin</th>
+                    <th>État</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mission in missions %}
+                    <tr>
+                        <td>{{ mission.id }}</td>
+                        <td>{{ mission.responsable }}</td>
+                        <td>
+                            {% for accompagnant in mission.accompagnants %}
+                                {{ accompagnant.nom }} {{ accompagnant.prenom }},
+                            {% endfor %}
+                        </td>
+                        <td>{{ mission.destination }}</td>
+                        <td>{{ mission.transport }}</td>
+                        <td>{{ mission.date_debut }}</td>
+                        <td>{{ mission.date_fin }}</td>
+                        <td>{{ mission.etat }}</td>
+                        <td>
+                            <a href="{{ url_for('edit_mission', mission_id=mission._id) }}" class="btn btn-warning">Modifier</a>
+                            <a href="{{ url_for('delete_mission', mission_id=mission._id) }}" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette mission ?');">Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Bouton pour rediriger vers la page d'ajout de mission -->
+        <a href="{{ url_for('addMission') }}" class="btn btn-primary">Ajouter une nouvelle Mission</a>
+    </div>
+</body>
+</html>
