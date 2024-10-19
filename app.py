@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from modele import User, Mission
+from modele import User, Mission, Personnel, Transport, Projet
 from db import db, app
 from admin import insert_admins
 
@@ -34,25 +34,40 @@ def index():
 @app.route('/gerer_missions', methods=['GET', 'POST'])
 def gerer_missions():
     if request.method == 'POST':
-        # Logique pour créer une nouvelle mission
+        # Récupérer les données du formulaire
         titre = request.form['titre']
         destination = request.form['destination']
         personnel_id = request.form['personnel_id']
-        voiture_id = request.form['voiture_id']
+        transport_id = request.form['transport_id']
         projet_id = request.form['projet_id']
+        date_depart = request.form['date_depart']
+        date_retour = request.form['date_retour']
+        etat = request.form['etat']
 
-        # Créer une nouvelle mission
-        new_mission = Mission(titre=titre, destination=destination,
-                              personnel_id=personnel_id, voiture_id=voiture_id,
-                              projet_id=projet_id)
+        # Créer la nouvelle mission
+        new_mission = Mission(
+            titre=titre,
+            destination=destination,
+            personnel_id=personnel_id,
+            transport_id=transport_id,
+            projet_id=projet_id,
+            date_depart=date_depart,
+            date_retour=date_retour
+        )
+
         db.session.add(new_mission)
         db.session.commit()
+
         flash('Mission ajoutée avec succès', 'success')
         return redirect(url_for('gerer_missions'))
 
-    # Si c'est une requête GET, récupérez toutes les missions et affichez-les
-    missions = Mission.query.all()  # Récupérer toutes les missions existantes
-    return render_template('missions.html', missions=missions)
+    # Récupérer les personnels, transports et projets pour les afficher dans les listes déroulantes
+    personnels = Personnel.query.all()
+    transports = Transport.query.all()
+    projets = Projet.query.all()
+
+    return render_template('missions.html', personnels=personnels, transports=transports, projets=projets)
+
 
 
 
@@ -112,6 +127,6 @@ def logout():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Créez toutes les tables si elles n'existent pas
-        insert_admins()  # Insérer les administrateurs manuellement  
+        db.create_all() # Créez toutes les tables si elles n'existent pas
+        insert_admins() 
     app.run(debug=True)
