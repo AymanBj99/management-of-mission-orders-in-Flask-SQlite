@@ -20,19 +20,27 @@ def index():
 
         if user and username in admin_users:
             # Si c'est un admin, rediriger vers l'interface admin
-            return redirect(url_for('gerer_missions'))
+            return redirect(url_for('gererMissions'))
         elif user:
             # Si c'est un employé, rediriger vers l'interface employé
-            return redirect(url_for('employee'))
+            return redirect(url_for('login'))
         else:
             flash('Utilisateur non trouvé', 'error')
-            return redirect(url_for('login'))
+            return redirect(url_for('employee'))
     else:
         return redirect(url_for('login'))
 
 
-@app.route('/gerer_missions', methods=['GET', 'POST'])
-def gerer_missions():
+@app.route('/gerer_missions', methods=['GET'])
+def gererMissions():
+    # Récupérer les missions existantes pour les afficher
+    missions = Mission.query.all()
+
+    return render_template('missions.html', missions=missions)
+
+
+@app.route('/add_mission', methods=['GET', 'POST'])
+def addMission():
     if request.method == 'POST':
         # Récupérer les données du formulaire
         titre = request.form['titre']
@@ -42,7 +50,6 @@ def gerer_missions():
         projet_id = request.form['projet_id']
         date_depart = request.form['date_depart']
         date_retour = request.form['date_retour']
-        etat = request.form['etat']
 
         # Créer la nouvelle mission
         new_mission = Mission(
@@ -59,14 +66,15 @@ def gerer_missions():
         db.session.commit()
 
         flash('Mission ajoutée avec succès', 'success')
-        return redirect(url_for('gerer_missions'))
+        return redirect(url_for('gererMissions'))
 
     # Récupérer les personnels, transports et projets pour les afficher dans les listes déroulantes
     personnels = Personnel.query.all()
     transports = Transport.query.all()
     projets = Projet.query.all()
 
-    return render_template('missions.html', personnels=personnels, transports=transports, projets=projets)
+    return render_template('addMission.html', personnels=personnels, transports=transports, projets=projets)
+
 
 
 
@@ -127,6 +135,10 @@ def logout():
 
 if __name__ == '__main__':
     with app.app_context():
+        insert_admins()  # Insérer les utilisateurs admins
         db.create_all() # Créez toutes les tables si elles n'existent pas
-        insert_admins() 
+         
     app.run(debug=True)
+
+
+
