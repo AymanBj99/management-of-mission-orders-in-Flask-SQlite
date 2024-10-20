@@ -23,10 +23,10 @@ def index():
             return redirect(url_for('gererMissions'))
         elif user:
             # Si c'est un employé, rediriger vers l'interface employé
-            return redirect(url_for('login'))
+            return redirect(url_for('employee'))
         else:
             flash('Utilisateur non trouvé', 'error')
-            return redirect(url_for('employee'))
+            return redirect(url_for('login'))
     else:
         return redirect(url_for('login'))
 
@@ -37,6 +37,15 @@ def gererMissions():
     missions = Mission.query.all()
 
     return render_template('missions.html', missions=missions)
+
+@app.route('/gerer_personnels', methods=['GET'])
+def gererPersonnels():
+    # Récupérer les personnels existants pour les afficher
+    personnels = Personnel.query.all()
+
+    return render_template('personnels.html', personnels=personnels)
+
+
 
 
 @app.route('/add_mission', methods=['GET', 'POST'])

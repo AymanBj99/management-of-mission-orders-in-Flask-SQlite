@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h2>Ajouter un Utilisateur</h2>
-        <form action="{{ url_for('add_utilisateur') }}" method="POST">
+        <form action="{{ url_for('add_personnel') }}" method="POST">
             <div class="form-group">
                 <label for="nom">Nom</label>
                 <input type="text" class="form-control" id="nom" name="nom" required>
