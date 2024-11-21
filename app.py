@@ -53,30 +53,6 @@ def login():
     return render_template('login.html')  # Afficher le formulaire de connexion
 
 
-# Route d'inscription
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-
-        # Vérifier si l'utilisateur existe déjà
-        existing_user = User.query.filter_by(username=username).first()
-
-        if existing_user is None:
-            # Hachage du mot de passe
-            password_hash = generate_password_hash(password)
-            # Créer un nouvel utilisateur
-            new_user = User(username=username, email=email, password_hash=password_hash)
-            db.session.add(new_user)
-            db.session.commit()
-            flash('Inscription réussie, vous pouvez vous connecter', 'success')
-            return redirect(url_for('login'))
-        else:
-            flash('Le nom d\'utilisateur existe déjà, veuillez en choisir un autre', 'error')
-
-    return render_template('register.html')
 
 
 

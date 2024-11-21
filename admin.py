@@ -1,14 +1,16 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from modele import User, Mission
+import logging
 from db import db
 
 app = Flask(__name__)
 
 from werkzeug.security import generate_password_hash
 
+logging.basicConfig(level=logging.INFO)
+
 def insert_admins():
-    # Liste des administrateurs à insérer avec les champs obligatoires
     admins = [
         {
             'username': 'admin1',
@@ -36,14 +38,14 @@ def insert_admins():
         }
     ]
 
+    added_admins = []
+
     for admin in admins:
-        # Vérifier si un utilisateur avec cet email existe déjà
         existing_user = User.query.filter_by(email=admin['email']).first()
-        
+
         if existing_user:
-            print(f"L'utilisateur avec l'email {admin['email']} existe déjà, il ne sera pas ajouté.")
+            logging.info(f"L'utilisateur avec l'email {admin['email']} existe déjà, il ne sera pas ajouté.")
         else:
-            # Si l'utilisateur n'existe pas, l'ajouter avec tous les champs requis
             new_admin = User(
                 username=admin['username'],
                 email=admin['email'],
@@ -57,10 +59,11 @@ def insert_admins():
                 rib=admin['rib']
             )
             db.session.add(new_admin)
+            added_admins.append(admin['email'])
 
     try:
         db.session.commit()
-        print("Les administrateurs ont été ajoutés avec succès.")
+        logging.info(f"Administrateurs ajoutés : {added_admins}")
     except Exception as e:
         db.session.rollback()
-        print(f"Une erreur est survenue lors de l'ajout des administrateurs : {e}")
+        logging.error(f"Erreur lors de l'ajout des administrateurs : {e}")
