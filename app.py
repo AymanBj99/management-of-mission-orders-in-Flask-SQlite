@@ -11,15 +11,15 @@ from datetime import datetime
 # Route de connexion
 @app.route('/')
 def index():
-    if 'username' in session:
+    if 'email' in session:
         # Récupérer l'utilisateur connecté
-        username = session['username']
-        user = User.query.filter_by(username=username).first()
+        email = session['email']
+        user = User.query.filter_by(email=email).first()
 
-        # Vérifier si l'utilisateur est un admin (ici, on compare avec des admins définis manuellement)
-        admin_users = ['admin1', 'admin2']  # Liste des utilisateurs admins définis manuellement
+        # Vérifier si l'utilisateur est un admin (en comparant avec des e-mails d'admins prédéfinis)
+        admin_emails = ['admin5@example.com', 'admin4@example.com']  # Liste des e-mails admins définis manuellement
 
-        if user and username in admin_users:
+        if user and email in admin_emails:
             # Si c'est un admin, rediriger vers l'interface admin
             return redirect(url_for('gererMissions'))
         elif user:
@@ -29,28 +29,27 @@ def index():
             flash('Utilisateur non trouvé', 'error')
             return redirect(url_for('login'))
     else:
-        return redirect(url_for('login'))
-    
-
+        return redirect(url_for('login'))  # Rediriger vers la page de connexion si non connecté
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        
-        # Récupérer l'utilisateur par son nom d'utilisateur
-        user = User.query.filter_by(username=username).first()
-        
+        email = request.form['email']  # Récupérer l'e-mail depuis le formulaire
+        password = request.form['password']  # Récupérer le mot de passe depuis le formulaire
+
+        # Rechercher l'utilisateur par son e-mail
+        user = User.query.filter_by(email=email).first()
+
         if user and check_password_hash(user.password_hash, password):
-            session['username'] = user.username
+            session['email'] = user.email  # Stocker l'e-mail dans la session
+            
             flash('Connexion réussie', 'success')
-            return redirect(url_for('index'))  # Rediriger vers la page d'accueil après connexion
+            return redirect(url_for('index'))  # Rediriger vers la route index pour gérer la redirection
         else:
-            flash('Nom d\'utilisateur ou mot de passe invalide', 'error')
-    
-    return render_template('login.html')  # Afficher le formulaire de connexion
+            flash('E-mail ou mot de passe invalide', 'error')
+
+    return render_template('login.html')  # Rendre le formulaire de connexion
 
 
 
