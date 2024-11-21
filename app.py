@@ -83,9 +83,11 @@ def register():
 # Route de déconnexion
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
-    flash('Vous êtes déconnecté', 'info')
+    # Supprime les données de session
+    session.pop('user_id', None)
+    flash("Vous avez été déconnecté avec succès.", "info")
     return redirect(url_for('login'))
+
 
 
 
@@ -312,7 +314,6 @@ def delete_user(id):
 #Executer
 if __name__ == '__main__':
     with app.app_context():
-        db.drop_all()
         db.create_all()
         insert_admins()
     app.run(debug=True)
