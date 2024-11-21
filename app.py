@@ -1,8 +1,9 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from modele import User, Mission, Personnel, Transport, Projet
+from modele import User, Mission
 from db import db, app
 from admin import insert_admins
+from datetime import datetime
 
 
 
@@ -29,63 +30,7 @@ def index():
             return redirect(url_for('login'))
     else:
         return redirect(url_for('login'))
-
-
-@app.route('/gerer_missions', methods=['GET'])
-def gererMissions():
-    # Récupérer les missions existantes pour les afficher
-    missions = Mission.query.all()
-
-    return render_template('missions.html', missions=missions)
-
-@app.route('/gerer_personnels', methods=['GET'])
-def gererPersonnels():
-    # Récupérer les personnels existants pour les afficher
-    personnels = Personnel.query.all()
-
-    return render_template('personnels.html', personnels=personnels)
-
-
-
-
-@app.route('/add_mission', methods=['GET', 'POST'])
-def addMission():
-    if request.method == 'POST':
-        # Récupérer les données du formulaire
-        titre = request.form['titre']
-        destination = request.form['destination']
-        personnel_id = request.form['personnel_id']
-        transport_id = request.form['transport_id']
-        projet_id = request.form['projet_id']
-        date_depart = request.form['date_depart']
-        date_retour = request.form['date_retour']
-
-        # Créer la nouvelle mission
-        new_mission = Mission(
-            titre=titre,
-            destination=destination,
-            personnel_id=personnel_id,
-            transport_id=transport_id,
-            projet_id=projet_id,
-            date_depart=date_depart,
-            date_retour=date_retour
-        )
-
-        db.session.add(new_mission)
-        db.session.commit()
-
-        flash('Mission ajoutée avec succès', 'success')
-        return redirect(url_for('gererMissions'))
-
-    # Récupérer les personnels, transports et projets pour les afficher dans les listes déroulantes
-    personnels = Personnel.query.all()
-    transports = Transport.query.all()
-    projets = Projet.query.all()
-
-    return render_template('addMission.html', personnels=personnels, transports=transports, projets=projets)
-
-
-
+    
 
 
 
@@ -142,11 +87,234 @@ def logout():
     flash('Vous êtes déconnecté', 'info')
     return redirect(url_for('login'))
 
+
+
+#Partie Mission 
+
+#Gerer la mission
+@app.route('/gerer_missions', methods=['GET'])
+def gererMissions():
+    # Récupérer les missions existantes pour les afficher
+    missions = Mission.query.all()
+
+    return render_template('missions.html', missions=missions)
+
+
+
+#Ajouter une mission
+@app.route('/add_mission', methods=['GET', 'POST'])
+def addMission():
+    if request.method == 'POST':
+        # Récupérer les données du formulaire
+        titre = request.form['titre']
+        destination = request.form['destination']
+        idUser = request.form['user_id']
+        matricule = request.form['matricule']
+        marque = request.form['marque']
+        chauffeur = request.form['chauffeur']
+        montant_gasoil = float(request.form['montant_gasoil'])
+        nom_projet = request.form['nom_projet']
+        chef_projet = request.form['chef_projet']
+        client = request.form['client']
+
+        # Convert date strings to date objects
+        date_depart = datetime.strptime(request.form['date_depart'], '%Y-%m-%d').date()
+        date_retour = datetime.strptime(request.form['date_retour'], '%Y-%m-%d').date()
+
+        # Créer la nouvelle mission avec les attributs de transport et de projet intégrés
+        new_mission = Mission(
+            titre=titre,
+            destination=destination,
+            user_id=idUser,
+            date_depart=date_depart,
+            date_retour=date_retour,
+            matricule=matricule,
+            marque=marque,
+            chauffeur=chauffeur,
+            montant_gasoil=montant_gasoil,
+            nom_projet=nom_projet,
+            chef_projet=chef_projet,
+            client=client
+        )
+
+        db.session.add(new_mission)
+        db.session.commit()
+
+        flash('Mission ajoutée avec succès', 'success')
+        return redirect(url_for('gererMissions'))
+
+    # Récupérer les utilisateurs pour les afficher dans la liste déroulante
+    users = User.query.all()
+
+    return render_template('addMission.html', users=users)
+
+#afficher mission 
+@app.route('/mission_details/<int:id>', methods=['GET'])
+def mission_details(id):
+    # Récupérer la mission avec ses relations
+    mission = Mission.query.get_or_404(id)
+    return render_template('afficherMission.html', mission=mission)
+
+#Modifier une mission
+@app.route('/editMission/<int:id>', methods=['GET', 'POST'])
+def edit_mission(id):
+    mission= Mission.query.get_or_404(id)
+    users = User.query.all()
+    if request.method == 'POST':
+        mission.titre = request.form['titre']
+        mission.destination = request.form['destination']
+        mission.user_id = request.form['user_id']
+        mission.matricule = request.form['matricule']
+        mission.marque = request.form['marque']
+        mission.chauffeur = request.form['chauffeur']
+        mission.montant_gasoil = float(request.form['montant_gasoil'])
+        mission.nom_projet = request.form['nom_projet']
+        mission.chef_projet = request.form['chef_projet']
+        mission.client = request.form['client']
+        mission.date_depart = datetime.strptime(request.form['date_depart'], '%Y-%m-%d').date()
+        mission.date_retour = datetime.strptime(request.form['date_retour'], '%Y-%m-%d').date()
+
+
+        # Mise à jour des autres champs nécessaires
+        db.session.commit()
+        flash('Mission mis à jour avec succès', 'success')
+        return redirect(url_for('gererMissions'))
+    return render_template('editMission.html', mission=mission, users=users)
+
+#Supprimer mission
+@app.route('/delete_mission/<int:id>', methods=['POST'])
+def delete_mission(id):
+    # Récupérer la mission par son ID
+    mission = Mission.query.get_or_404(id)
+
+    # Supprimer la mission
+    db.session.delete(mission)
+    db.session.commit()
+
+    flash("Mission supprimée avec succès", "success")
+    return redirect(url_for('gererMissions'))
+
+
+#Etat de la mission
+@app.route('/update_etat/<int:mission_id>', methods=['POST'])
+def update_etat(mission_id):
+    # Récupérer la mission par son ID
+    mission = Mission.query.get_or_404(mission_id)
+
+    # Mettre à jour l'état
+    mission.etat = "Validée"
+    db.session.commit()
+
+    flash("Mission validée avec succès", "success")
+    return redirect(url_for('gererMissions'))
+
+#Partie User
+
+#Gerer les utilisateurs
+@app.route('/gerer_users', methods=['GET'])
+def gererUsers():
+    # Récupérer les personnels existants pour les afficher
+    users = User.query.all()
+
+    return render_template('users.html', users=users)
+
+
+
+#Ajouter un utilisateur
+@app.route('/add_user', methods=['GET', 'POST'])
+def addUser():
+    if request.method == 'POST':
+        # Récupérer les données du formulaire
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        nom = request.form['nom']
+        prenom = request.form['prenom']
+        fonction = request.form['fonction']
+        direction = request.form['direction']
+        cin = request.form['cin']
+        tel = request.form['tel']
+        rib = request.form['rib']
+
+        # Vérification de l'unicité pour email et cin
+        existing_user = User.query.filter((User.email == email) | (User.cin == cin)).first()
+        if existing_user:
+            flash('Un utilisateur avec cet email ou CIN existe déjà.', 'danger')
+            return redirect(url_for('addUser'))
+
+        # Créer la nouvelle mission
+        new_user = User(
+            username=username,
+            email=email,
+            password_hash=generate_password_hash(password),
+            nom=nom,
+            prenom=prenom,
+            fonction=fonction,
+            direction=direction,
+            cin=cin,
+            tel=tel,
+            rib=rib
+        )
+
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Personnel ajouté avec succès', 'success')
+            return redirect(url_for('gererUsers'))
+        except Exception as e:
+            db.session.rollback()  # Annuler la transaction en cas d'erreur
+            flash(f'Erreur lors de l\'ajout de l\'utilisateur : {str(e)}', 'danger')
+
+    users = User.query.all()
+    return render_template('addUser.html', users=users)
+
+
+
+#Modifier un utilisateur
+@app.route('/edit_user/<int:id>', methods=['GET', 'POST'])
+def edit_user(id):
+    user = User.query.get_or_404(id)
+    if request.method == 'POST':
+        user.username = request.form['username']
+        user.email = request.form['email']
+        user.password = request.form['password']
+        user.nom = request.form['nom']
+        user.prenom = request.form['prenom']
+        user.fonction = request.form['fonction']
+        user.direction = request.form['direction']
+        user.cin = request.form['cin']
+        user.tel = request.form['tel']
+        user.rib = request.form['rib']
+
+        # Mise à jour des autres champs nécessaires
+        db.session.commit()
+        flash('Utilisateur mis à jour avec succès', 'success')
+        return redirect(url_for('gererUsers'))
+    return render_template('editUser.html', user=user)
+
+
+
+
+#Supprimer un utilisateur
+@app.route('/delete_user/<int:id>', methods=['POST'])
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('Utilisateur supprimé avec succès', 'success')
+    return redirect(url_for('gererUsers'))
+
+
+
+
+
+
+#Executer
 if __name__ == '__main__':
     with app.app_context():
-        insert_admins()  # Insérer les utilisateurs admins
-        db.create_all() # Créez toutes les tables si elles n'existent pas
-         
+        db.drop_all()
+        db.create_all()
+        insert_admins()
     app.run(debug=True)
 
 

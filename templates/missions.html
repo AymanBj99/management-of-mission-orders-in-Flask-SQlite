@@ -7,85 +7,162 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
             padding: 20px;
+            margin: 0;
         }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #000000;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
         }
+
         .header img {
-            max-height: 80px;
+            max-height: 60px;
         }
-        .header .options {
-            display: flex;
-            gap: 15px;
-        }
+
         .header .options button {
-            width: 200px;
+            background-color: #fff;
+            color: #007bff;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            margin-left: 15px;
+        }
+
+        .header .options button:hover {
+            color: #fff;
+            background-color: #0056b3;
+        }
+
+        h2 {
+            color: #007bff;
+            font-weight: bold;
+            margin-top: 150px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 12px;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-info, .btn-warning, .btn-danger, .btn-primary {
+            font-size: 0.8rem;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .btn-info:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-warning:hover {
+            background-color: #ff9500;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- En-tête avec logo et boutons -->
+        <!-- En-tête -->
         <div class="header">
-            <!-- Logo de l'entreprise -->
             <div class="logo">
                 <img src="logo.png" alt="Logo de l'entreprise">
             </div>
-
-            <!-- Boutons pour les options "Gérer les missions" et "Gérer les utilisateurs" -->
             <div class="options">
-                <button class="btn btn-primary" onclick="window.location.href='/gerer_missions'">Gérer les Missions</button>
-                <button class="btn btn-primary" onclick="window.location.href='/gerer_personnels'">Gérer les Utilisateurs</button>
+                <button class="btn btn-light" onclick="window.location.href='/gerer_missions'">Gérer les Missions</button>
+                <button class="btn btn-light" onclick="window.location.href='/gerer_users'">Gérer les Utilisateurs</button>
             </div>
         </div>
 
-        <!-- Section: Gérer les Missions -->
-        <h2>Gérer les Missions</h2>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Responsable</th>
-                    <th>Accompagnants</th>
-                    <th>Destination</th>
-                    <th>Transport</th>
-                    <th>Date Début</th>
-                    <th>Date Fin</th>
-                    <th>État</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for mission in missions %}
+        <!-- Section Missions -->
+        <div class="missions-section">
+            <h2>Gérer les Missions</h2>
+            <table class="table table-bordered">
+                <thead>
                     <tr>
-                        <td>{{ mission.id }}</td>
-                        <td>{{ mission.responsable.nom }} {{ mission.responsable.prenom }}</td>
-                        <td>
-                            {% for accompagnant in mission.accompagnants %}
-                                {{ accompagnant.nom }} {{ accompagnant.prenom }},
-                            {% endfor %}
-                        </td>
-                        <td>{{ mission.destination }}</td>
-                        <td>{{ mission.transport.marque }} ({{ mission.transport.matricule }})</td>
-                        <td>{{ mission.date_debut }}</td>
-                        <td>{{ mission.date_fin }}</td>
-                        <td>{{ mission.etat }}</td>
-                        <td>
-                            <a href="{{ url_for('voir_details_mission', mission_id=mission.id) }}" class="btn btn-info">Voir plus de détails</a>
-                            <a href="{{ url_for('edit_mission', mission_id=mission.id) }}" class="btn btn-warning">Modifier</a>
-                            <a href="{{ url_for('delete_mission', mission_id=mission.id) }}" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette mission ?');">Supprimer</a>
-                        </td>
+                        <th>ID</th>
+                        <th>Titre de la mission</th>
+                        <th>Responsable</th>
+                        <th>Destination</th>
+                        <th>Transport</th>
+                        <th>Projet</th>
+                        <th>Date Départ</th>
+                        <th>Date Retour</th>
+                        <th>État</th>
+                        <th>Actions</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- Bouton pour rediriger vers la page d'ajout de mission -->
-        <a href="{{ url_for('addMission') }}" class="btn btn-primary">Ajouter une nouvelle Mission</a>
+                </thead>
+                <tbody>
+                    {% for mission in missions %}
+                        <tr>
+                            <td>{{ mission.id }}</td>
+                            <td>{{mission.titre}}</td>
+                            <td>{{ mission.user.nom }} {{ mission.user.prenom }}</td>
+                            <td>{{ mission.destination }}</td>
+                            <td>{{ mission.marque }} ({{ mission.matricule }})</td>
+                            <td>{{ mission.nom_projet }} - {{ mission.chef_projet }}</td>
+                            <td>{{ mission.date_depart }}</td>
+                            <td>{{ mission.date_retour }}</td>
+                            <td>{{ mission.etat }}</td>
+                            <td>
+                                <a href="{{ url_for('mission_details', id=mission.id) }}" class="btn btn-info">Détails</a>
+                                <a href="{{ url_for('edit_mission', id=mission.id) }}" class="btn btn-warning">Modifier</a>
+                                <form action="{{ url_for('delete_mission', id=mission.id) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette mission ?');">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{{ url_for('addMission') }}" class="btn btn-primary my-3">Ajouter une nouvelle Mission</a>
+        </div>
     </div>
 </body>
 </html>

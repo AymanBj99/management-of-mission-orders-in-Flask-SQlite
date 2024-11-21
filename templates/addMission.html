@@ -5,11 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter une Mission</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f7fc;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        h2 {
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+        h3 {
+            margin-top: 30px;
+            color: #007bff;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h2>Ajouter une nouvelle Mission</h2>
-        
+        <h2 class="text-center">Ajouter une nouvelle Mission</h2>
+
         <!-- Affichage des messages flash (succès ou erreur) -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -35,10 +64,10 @@
 
             <div class="form-group">
                 <label for="responsable">Responsable</label>
-                <select class="form-control" id="responsable" name="personnel_id" required>
-                    {% for personnel in personnels %}
-                        <option value="{{ personnel.id }}">
-                            {{ personnel.nom }} {{ personnel.prenom }} - {{ personnel.fonction }}
+                <select class="form-control" id="responsable" name="user_id" required>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">
+                            {{ user.nom }} {{ user.prenom }} - {{ user.fonction }}
                         </option>
                     {% endfor %}
                 </select>
@@ -53,11 +82,10 @@
                     <label for="date_retour">Date de retour</label>
                     <input type="date" class="form-control" id="date_retour" name="date_retour" required>
                 </div>
-                
             </div>
 
-            <!-- Section Accompagnants (Horizontale) -->
-            <h3 class="mt-4">Accompagnants</h3>
+            <!-- Section Accompagnants -->
+            <h3>Accompagnants</h3>
             <div id="accompagnants-wrapper">
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -66,11 +94,9 @@
                     </div>
                 </div>
             </div>
-            
 
-
-            <!-- Section Transport (Horizontale) -->
-            <h3 class="mt-4">Informations sur le Transport</h3>
+            <!-- Section Transport -->
+            <h3>Informations sur le Transport</h3>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="matricule">Matricule du véhicule</label>
@@ -90,8 +116,8 @@
                 </div>
             </div>
 
-            <!-- Section Projet (Horizontale) -->
-            <h3 class="mt-4">Informations sur le Projet</h3>
+            <!-- Section Projet -->
+            <h3>Informations sur le Projet</h3>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="nom_projet">Nom du projet</label>

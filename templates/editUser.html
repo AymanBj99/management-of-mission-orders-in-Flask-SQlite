@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier l'utilisateur</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .cancel-btn {
+            color: #007bff;
+        }
+
+        .cancel-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Modifier l'utilisateur</h1>
+
+        <form method="POST" action="{{ url_for('edit_user', id=user.idUser) }}">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Laissez vide pour conserver l'ancien mot de passe">
+            </div>
+            <div class="form-group">
+                <label for="matricule">Matricule</label>
+                <input type="text" class="form-control" id="matricule" name="matricule" value="{{ user.mat }}">
+            </div>
+            <div class="form-group">
+                <label for="nom">Nom</label>
+                <input type="text" class="form-control" id="nom" name="nom" value="{{ user.nom }}" required>
+            </div>
+            <div class="form-group">
+                <label for="prenom">Prénom</label>
+                <input type="text" class="form-control" id="prenom" name="prenom" value="{{ user.prenom }}" required>
+            </div>
+            <div class="form-group">
+                <label for="fonction">Fonction</label>
+                <input type="text" class="form-control" id="fonction" name="fonction" value="{{ user.fonction }}" required>
+            </div>
+            <div class="form-group">
+                <label for="direction">Direction</label>
+                <input type="text" class="form-control" id="direction" name="direction" value="{{ user.direction }}" required>
+            </div>
+            <div class="form-group">
+                <label for="cin">CIN</label>
+                <input type="text" class="form-control" id="cin" name="cin" value="{{ user.cin }}" required>
+            </div>
+            <div class="form-group">
+                <label for="tel">Téléphone</label>
+                <input type="text" class="form-control" id="tel" name="tel" value="{{ user.tel }}" required>
+            </div>
+            <div class="form-group">
+                <label for="rib">RIB</label>
+                <input type="text" class="form-control" id="rib" name="rib" value="{{ user.rib }}" required>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                <a href="{{ url_for('gererUsers') }}" class="btn btn-secondary cancel-btn">Annuler</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
