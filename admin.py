@@ -14,7 +14,7 @@ def insert_admins():
     admins = [
         {
             'username': 'admin1',
-            'email': 'admin5@example.com',
+            'email': 'admin1@example.com',
             'password_hash': generate_password_hash('password1'),
             'nom': 'Admin',
             'prenom': 'One',
@@ -26,7 +26,7 @@ def insert_admins():
         },
         {
             'username': 'admin2',
-            'email': 'admin4@example.com',
+            'email': 'admin2@example.com',
             'password_hash': generate_password_hash('password2'),
             'nom': 'Admin',
             'prenom': 'Two',

@@ -17,14 +17,14 @@ def index():
         user = User.query.filter_by(email=email).first()
 
         # Vérifier si l'utilisateur est un admin (en comparant avec des e-mails d'admins prédéfinis)
-        admin_emails = ['admin5@example.com', 'admin4@example.com']  # Liste des e-mails admins définis manuellement
+        admin_emails = ['admin1@example.com', 'admin2@example.com']  # Liste des e-mails admins définis manuellement
 
         if user and email in admin_emails:
             # Si c'est un admin, rediriger vers l'interface admin
             return redirect(url_for('gererMissions'))
         elif user:
             # Si c'est un employé, rediriger vers l'interface employé
-            return redirect(url_for('employee'))
+            return redirect(url_for('employe'))
         else:
             flash('Utilisateur non trouvé', 'error')
             return redirect(url_for('login'))
@@ -282,7 +282,26 @@ def delete_user(id):
     return redirect(url_for('gererUsers'))
 
 
+#Page Employe
+@app.route('/employe')
+def employe():
+    if 'email' in session:
+        # Récupérer l'utilisateur connecté par son email
+        email = session['email']
+        user = User.query.filter_by(email=email).first()
 
+        if user:
+            # Rendre une page avec des données spécifiques à l'employé
+            return render_template(
+                'employe.html',
+                user=user  # Envoyer les informations de l'utilisateur à la page
+            )
+        else:
+            flash('Utilisateur introuvable.', 'error')
+            return redirect(url_for('login'))
+    else:
+        flash('Veuillez vous connecter pour accéder à cette page.', 'error')
+        return redirect(url_for('login'))
 
 
 

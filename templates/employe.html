@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Employé</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Bienvenue, {{ user.nom }} {{ user.prenom }}</h1>
+    
+    <p>Votre fonction : {{ user.fonction }}</p>
+    <p>Votre direction : {{ user.direction }}</p>
+    <p>Votre CIN : {{ user.cin }}</p>
+    <p>Votre téléphone : {{ user.tel }}</p>
+    <p>Votre RIB : {{ user.rib }}</p>
+
+    <a href="{{ url_for('logout') }}" class="btn btn-danger">Se déconnecter</a>
+</body>
+</html>
