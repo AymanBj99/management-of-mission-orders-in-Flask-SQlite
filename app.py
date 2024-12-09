@@ -83,7 +83,7 @@ def gererMissions():
 def addMission():
     if request.method == 'POST':
         # Récupérer les données du formulaire
-        titre = request.form['titre']
+        
         destination = request.form['destination']
         idUser = request.form['user_id']
         matricule = request.form['matricule']
@@ -92,15 +92,14 @@ def addMission():
         montant_gasoil = float(request.form['montant_gasoil'])
         nom_projet = request.form['nom_projet']
         chef_projet = request.form['chef_projet']
-        client = request.form['client']
-
+        
         # Convert date strings to date objects
         date_depart = datetime.strptime(request.form['date_depart'], '%Y-%m-%d').date()
         date_retour = datetime.strptime(request.form['date_retour'], '%Y-%m-%d').date()
 
         # Créer la nouvelle mission avec les attributs de transport et de projet intégrés
         new_mission = Mission(
-            titre=titre,
+            
             destination=destination,
             user_id=idUser,
             date_depart=date_depart,
@@ -111,7 +110,7 @@ def addMission():
             montant_gasoil=montant_gasoil,
             nom_projet=nom_projet,
             chef_projet=chef_projet,
-            client=client
+            
         )
 
         db.session.add(new_mission)
@@ -138,7 +137,7 @@ def edit_mission(id):
     mission= Mission.query.get_or_404(id)
     users = User.query.all()
     if request.method == 'POST':
-        mission.titre = request.form['titre']
+        
         mission.destination = request.form['destination']
         mission.user_id = request.form['user_id']
         mission.matricule = request.form['matricule']
@@ -147,7 +146,6 @@ def edit_mission(id):
         mission.montant_gasoil = float(request.form['montant_gasoil'])
         mission.nom_projet = request.form['nom_projet']
         mission.chef_projet = request.form['chef_projet']
-        mission.client = request.form['client']
         mission.date_depart = datetime.strptime(request.form['date_depart'], '%Y-%m-%d').date()
         mission.date_retour = datetime.strptime(request.form['date_retour'], '%Y-%m-%d').date()
 

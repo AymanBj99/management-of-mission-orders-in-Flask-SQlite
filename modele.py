@@ -27,7 +27,6 @@ class Mission(db.Model):
     __tablename__ = 'missions'
     
     id = db.Column(db.Integer, primary_key=True)
-    titre = db.Column(db.String(100), nullable=False)
     destination = db.Column(db.String(100), nullable=False)
     date_depart = db.Column(db.Date, nullable=False)
     date_retour = db.Column(db.Date, nullable=False)
@@ -42,7 +41,6 @@ class Mission(db.Model):
     # Attributs de l'ancienne table Projet
     nom_projet = db.Column(db.String(100), nullable=False)
     chef_projet = db.Column(db.String(50), nullable=False)
-    client = db.Column(db.String(50), nullable=False)
     etat = db.Column(db.String(50), nullable=False, default="En attente")
     # Relations
     user = db.relationship('User', backref='missions')

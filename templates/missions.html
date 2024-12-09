@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de bord Admin</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -128,7 +130,6 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Titre de la mission</th>
                         <th>Responsable</th>
                         <th>Destination</th>
                         <th>Transport</th>
@@ -143,7 +144,6 @@
                     {% for mission in missions %}
                         <tr>
                             <td>{{ mission.id }}</td>
-                            <td>{{ mission.titre }}</td>
                             <td>{{ mission.user.nom }} {{ mission.user.prenom }}</td>
                             <td>{{ mission.destination }}</td>
                             <td>{{ mission.marque }} ({{ mission.matricule }})</td>
@@ -152,12 +152,24 @@
                             <td>{{ mission.date_retour }}</td>
                             <td>{{ mission.etat }}</td>
                             <td>
-                                <a href="{{ url_for('mission_details', id=mission.id) }}" class="btn btn-info">Détails</a>
-                                <a href="{{ url_for('edit_mission', id=mission.id) }}" class="btn btn-warning">Modifier</a>
+                                <!-- Bouton Détails avec icône -->
+                                <a href="{{ url_for('mission_details', id=mission.id) }}" class="btn btn-info" title="Détails">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                            
+                                <!-- Bouton Modifier avec icône -->
+                                <a href="{{ url_for('edit_mission', id=mission.id) }}" class="btn btn-warning" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            
+                                <!-- Bouton Supprimer avec icône -->
                                 <form action="{{ url_for('delete_mission', id=mission.id) }}" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette mission ?');">Supprimer</button>
+                                    <button type="submit" class="btn btn-danger" title="Supprimer" onclick="return confirm('Voulez-vous vraiment supprimer cette mission ?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </form>
                             </td>
+                            
                         </tr>
                     {% endfor %}
                 </tbody>
