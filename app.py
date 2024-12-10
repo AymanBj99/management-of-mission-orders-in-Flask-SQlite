@@ -1,9 +1,10 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from modele import User, Mission
+from modele import User, Mission, Equipe
 from db import db, app
 from admin import insert_admins
 from datetime import datetime
+from forms import MissionForm
 
 
 
@@ -72,8 +73,7 @@ def logout():
 @app.route('/gerer_missions', methods=['GET'])
 def gererMissions():
     # Récupérer les missions existantes pour les afficher
-    missions = Mission.query.all()
-
+    missions = Mission.query.all()  # Récupérer toutes les missions depuis la base de données
     return render_template('missions.html', missions=missions)
 
 
@@ -81,48 +81,41 @@ def gererMissions():
 #Ajouter une mission
 @app.route('/add_mission', methods=['GET', 'POST'])
 def addMission():
-    if request.method == 'POST':
-        # Récupérer les données du formulaire
-        
-        destination = request.form['destination']
-        idUser = request.form['user_id']
-        matricule = request.form['matricule']
-        marque = request.form['marque']
-        chauffeur = request.form['chauffeur']
-        montant_gasoil = float(request.form['montant_gasoil'])
-        nom_projet = request.form['nom_projet']
-        chef_projet = request.form['chef_projet']
-        
-        # Convert date strings to date objects
-        date_depart = datetime.strptime(request.form['date_depart'], '%Y-%m-%d').date()
-        date_retour = datetime.strptime(request.form['date_retour'], '%Y-%m-%d').date()
+    form = MissionForm()
+    # Charger les utilisateurs dans les listes déroulantes
+    form.responsable_id.choices = [(user.idUser, f"{user.nom} {user.prenom}") for user in User.query.all()]
+    form.equipe_ids.choices = [(user.idUser, f"{user.nom} {user.prenom}") for user in User.query.all()]
 
-        # Créer la nouvelle mission avec les attributs de transport et de projet intégrés
-        new_mission = Mission(
-            
-            destination=destination,
-            user_id=idUser,
-            date_depart=date_depart,
-            date_retour=date_retour,
-            matricule=matricule,
-            marque=marque,
-            chauffeur=chauffeur,
-            montant_gasoil=montant_gasoil,
-            nom_projet=nom_projet,
-            chef_projet=chef_projet,
-            
+    if form.validate_on_submit():
+        # Créer la mission
+        mission = Mission(
+            responsable_id=form.responsable_id.data,
+            projet=form.projet.data,
+            chef_de_projet=form.chef_de_projet.data,
+            chauffeur=form.chauffeur.data,
+            marque_vehicule=form.marque_vehicule.data,
+            matricule_vehicule=form.matricule_vehicule.data,
+            designation_travaux=form.designation_travaux.data,
+            site_client=form.site_client.data,
+            ville_depart=form.ville_depart.data,
+            ville_arrivee=form.ville_arrivee.data,
+            date_debut=form.date_debut.data,
+            date_fin=form.date_fin.data,
+            recharge_gasoil=form.recharge_gasoil.data
         )
-
-        db.session.add(new_mission)
+        db.session.add(mission)
         db.session.commit()
 
-        flash('Mission ajoutée avec succès', 'success')
-        return redirect(url_for('gererMissions'))
+        # Ajouter les membres de l'équipe
+        for user_id in form.equipe_ids.data:
+            equipe_member = Equipe(mission_id=mission.id, user_id=user_id)
+            db.session.add(equipe_member)
 
-    # Récupérer les utilisateurs pour les afficher dans la liste déroulante
-    users = User.query.all()
+        db.session.commit()
+        return redirect(url_for('list_missions'))
 
-    return render_template('addMission.html', users=users)
+    return render_template('addMission.html', form=form)
+
 
 #afficher mission 
 @app.route('/mission_details/<int:id>', methods=['GET'])
@@ -168,7 +161,6 @@ def delete_mission(id):
 
     flash("Mission supprimée avec succès", "success")
     return redirect(url_for('gererMissions'))
-
 
 #Etat de la mission
 @app.route('/update_etat/<int:mission_id>', methods=['POST'])
@@ -306,6 +298,7 @@ def employe():
 #Executer
 if __name__ == '__main__':
     with app.app_context():
+        db.drop_all()
         db.create_all()
         insert_admins()
     app.run(debug=True)

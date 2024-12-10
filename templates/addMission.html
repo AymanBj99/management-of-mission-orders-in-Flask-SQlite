@@ -1,138 +1,76 @@
+<!-- templates/mission_new.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter une Mission</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f4f7fc;
-        }
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .form-group label {
-            font-weight: bold;
-        }
-        h2 {
-            color: #007bff;
-            margin-bottom: 30px;
-        }
-        h3 {
-            margin-top: 30px;
-            color: #007bff;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-        .alert {
-            margin-top: 20px;
-        }
-    </style>
+    <title>Ajouter une Nouvelle Mission</title>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2 class="text-center">Ajouter une nouvelle Mission</h2>
+    <h1>Ajouter une Nouvelle Mission</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <label for="responsable_id">Responsable :</label>
+        {{ form.responsable_id() }}
+        <br>
 
-        <!-- Affichage des messages flash (succès ou erreur) -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="alert alert-{{ messages[0][0] }}">
-                    {{ messages[0][1] }}
-                </div>
-            {% endif %}
-        {% endwith %}
+        <label for="projet">Projet :</label>
+        {{ form.projet() }}
+        <br>
 
-        <form action="{{ url_for('addMission') }}" method="POST">
-            <!-- Informations sur la Mission -->
-            <h3>Informations sur la Mission</h3>
+        <label for="chef_de_projet">Chef de Projet :</label>
+        {{ form.chef_de_projet() }}
+        <br>
 
+        <label for="chauffeur">Chauffeur :</label>
+        {{ form.chauffeur() }}
+        <br>
 
-            <div class="form-group">
-                <label for="destination">Destination</label>
-                <input type="text" class="form-control" id="destination" name="destination" placeholder="Entrer la destination" required>
-            </div>
+        <label for="marque_vehicule">Marque de véhicule :</label>
+        {{ form.marque_vehicule() }}
+        <br>
 
-            <div class="form-group">
-                <label for="responsable">Responsable</label>
-                <select class="form-control" id="responsable" name="user_id" required>
-                    {% for user in users %}
-                        <option value="{{ user.id }}">
-                            {{ user.nom }} {{ user.prenom }} - {{ user.fonction }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+        <label for="matricule_vehicule">Matricule de véhicule :</label>
+        {{ form.matricule_vehicule() }}
+        <br>
 
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="date_depart">Date de départ</label>
-                    <input type="date" class="form-control" id="date_depart" name="date_depart" required>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="date_retour">Date de retour</label>
-                    <input type="date" class="form-control" id="date_retour" name="date_retour" required>
-                </div>
-            </div>
+        <label for="designation_travaux">Désignation des travaux :</label>
+        {{ form.designation_travaux() }}
+        <br>
 
-            <!-- Section Accompagnants -->
-            <h3>Accompagnants</h3>
-            <div id="accompagnants-wrapper">
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="accompagnant">Nom de l'accompagnant</label>
-                        <input type="text" class="form-control" id="accompagnant" name="accompagnants[]" placeholder="Nom de l'accompagnant">
-                    </div>
-                </div>
-            </div>
+        <label for="site_client">Site ou Client :</label>
+        {{ form.site_client() }}
+        <br>
 
-            <!-- Section Transport -->
-            <h3>Informations sur le Transport</h3>
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="matricule">Matricule du véhicule</label>
-                    <input type="text" class="form-control" id="matricule" name="matricule" placeholder="Matricule du véhicule" required>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="marque">Marque du véhicule</label>
-                    <input type="text" class="form-control" id="marque" name="marque" placeholder="Marque du véhicule" required>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="chauffeur">Nom du chauffeur</label>
-                    <input type="text" class="form-control" id="chauffeur" name="chauffeur" placeholder="Nom du chauffeur" required>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="montant_gasoil">Montant du gasoil</label>
-                    <input type="number" class="form-control" id="montant_gasoil" name="montant_gasoil" placeholder="Montant du gasoil (en euros)" required>
-                </div>
-            </div>
+        <label for="ville_depart">Ville de départ :</label>
+        {{ form.ville_depart() }}
+        <br>
 
-            <!-- Section Projet -->
-            <h3>Informations sur le Projet</h3>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="nom_projet">Nom du projet</label>
-                    <input type="text" class="form-control" id="nom_projet" name="nom_projet" placeholder="Entrer le nom du projet" required>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="chef_projet">Chef de projet</label>
-                    <input type="text" class="form-control" id="chef_projet" name="chef_projet" placeholder="Nom du chef de projet" required>
-                </div>
-                
-            </div>
+        <label for="ville_arrivee">Ville d'arrivée :</label>
+        {{ form.ville_arrivee() }}
+        <br>
 
-            <!-- Bouton de soumission -->
-            <button type="submit" class="btn btn-primary mt-4">Ajouter la Mission</button>
-        </form>
-    </div>
+        <label for="date_debut">Date de début :</label>
+        {{ form.date_debut() }}
+        <br>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <label for="date_fin">Date de fin :</label>
+        {{ form.date_fin() }}
+        <br>
+
+        <label for="recharge_gasoil">Recharge gasoil :</label>
+        {{ form.recharge_gasoil() }}
+        <br>
+
+        <label for="equipe_ids">Équipe :</label>
+        {{ form.equipe_ids() }}
+        <br>
+
+        <button type="submit">Ajouter la mission</button>
+    </form>
+
+    <br>
+    <a href="{{ url_for('gererMissions') }}">Retour à la liste des missions</a>
 </body>
 </html>

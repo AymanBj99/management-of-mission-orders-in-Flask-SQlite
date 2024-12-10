@@ -1,5 +1,6 @@
 from flask import Flask, request, session
 from db import db
+from datetime import datetime
 
 
 #User for connection
@@ -25,28 +26,39 @@ class User(db.Model):
 
 class Mission(db.Model):
     __tablename__ = 'missions'
-    
     id = db.Column(db.Integer, primary_key=True)
-    destination = db.Column(db.String(100), nullable=False)
-    date_depart = db.Column(db.Date, nullable=False)
-    date_retour = db.Column(db.Date, nullable=False)
+    responsable_id = db.Column(db.Integer, db.ForeignKey('users.idUser'), nullable=False)  # Lié à User
+    projet = db.Column(db.String(255), nullable=False)
+    chef_de_projet = db.Column(db.String(255), nullable=False)
+    date_enregistrement = db.Column(db.DateTime, default=datetime.utcnow)
+    chauffeur = db.Column(db.String(255), nullable=False)
+    marque_vehicule = db.Column(db.String(255), nullable=False)
+    matricule_vehicule = db.Column(db.String(50), nullable=False)
+
+    designation_travaux = db.Column(db.String(255), nullable=False)
+    site_client = db.Column(db.String(255), nullable=False)
+    ville_depart = db.Column(db.String(100), nullable=False)
+    ville_arrivee = db.Column(db.String(100), nullable=False)
+    date_debut = db.Column(db.Date, nullable=False)
+    date_fin = db.Column(db.Date, nullable=False)
+    recharge_gasoil = db.Column(db.Float, default=0.0)
+
+    responsable = db.relationship("User", backref="missions", foreign_keys=[responsable_id])
+    equipe = db.relationship("Equipe", back_populates="mission", cascade="all, delete-orphan")
+
+    @property
+    def nombre_jours(self):
+        if self.date_debut and self.date_fin:
+            return (self.date_fin - self.date_debut).days + 1
+        return 0
+
+
+
+class Equipe(db.Model):
+    __tablename__ = 'equipes'
+    id = db.Column(db.Integer, primary_key=True)
+    mission_id = db.Column(db.Integer, db.ForeignKey('missions.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.idUser'), nullable=False)
 
-    # Attributs de l'ancienne table Transport
-    matricule = db.Column(db.String(20), unique=True, nullable=False)
-    marque = db.Column(db.String(50), nullable=False)
-    chauffeur = db.Column(db.String(50), nullable=False)
-    montant_gasoil = db.Column(db.Float, nullable=False)
-
-    # Attributs de l'ancienne table Projet
-    nom_projet = db.Column(db.String(100), nullable=False)
-    chef_projet = db.Column(db.String(50), nullable=False)
-    etat = db.Column(db.String(50), nullable=False, default="En attente")
-    # Relations
-    user = db.relationship('User', backref='missions')
-
-    def __repr__(self):
-        return f'<Mission {self.titre} - {self.destination} - {self.etat}>'
-
-
-
+    mission = db.relationship("Mission", back_populates="equipe")
+    user = db.relationship("User")

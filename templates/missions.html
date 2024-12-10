@@ -1,181 +1,39 @@
+<!-- templates/mission_list.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de bord Admin</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
-            padding: 20px;
-            margin: 0;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background-color: #000000;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            color: #fff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        .header img {
-            max-height: 60px;
-        }
-
-        .header .options button {
-            background-color: #fff;
-            color: #007bff;
-            font-weight: bold;
-            border: none;
-            border-radius: 5px;
-            margin-left: 15px;
-        }
-
-        .header .options button:hover {
-            color: #fff;
-            background-color: #0056b3;
-        }
-
-        h2 {
-            color: #007bff;
-            font-weight: bold;
-            margin-top: 150px;
-            margin-bottom: 20px;
-        }
-
-        table {
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        th, td {
-            text-align: center;
-            padding: 12px;
-            font-size: 0.9rem;
-        }
-
-        th {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        tbody tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .btn-info, .btn-warning, .btn-danger, .btn-primary {
-            font-size: 0.8rem;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .btn-info:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-warning:hover {
-            background-color: #ff9500;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-        .btn-primary:hover {
-            background-color: #218838;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+    <title>Liste des Missions</title>
 </head>
 <body>
-    <div class="container">
-        <!-- En-tête -->
-        <div class="header">
-            <div class="logo">
-                <img src="logo.png" alt="Logo de l'entreprise">
-            </div>
-            <div class="options">
-                <button class="btn btn-light" onclick="window.location.href='/gerer_missions'">Gérer les Missions</button>
-                <button class="btn btn-light" onclick="window.location.href='/gerer_users'">Gérer les Utilisateurs</button>
-                <button class="btn btn-danger" onclick="window.location.href='/logout'">Déconnexion</button>
-            </div>
-        </div>
-
-        <!-- Section Missions -->
-        <div class="missions-section">
-            <h2>Gérer les Missions</h2>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Responsable</th>
-                        <th>Destination</th>
-                        <th>Transport</th>
-                        <th>Projet</th>
-                        <th>Date Départ</th>
-                        <th>Date Retour</th>
-                        <th>État</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for mission in missions %}
-                        <tr>
-                            <td>{{ mission.id }}</td>
-                            <td>{{ mission.user.nom }} {{ mission.user.prenom }}</td>
-                            <td>{{ mission.destination }}</td>
-                            <td>{{ mission.marque }} ({{ mission.matricule }})</td>
-                            <td>{{ mission.nom_projet }} - {{ mission.chef_projet }}</td>
-                            <td>{{ mission.date_depart }}</td>
-                            <td>{{ mission.date_retour }}</td>
-                            <td>{{ mission.etat }}</td>
-                            <td>
-                                <!-- Bouton Détails avec icône -->
-                                <a href="{{ url_for('mission_details', id=mission.id) }}" class="btn btn-info" title="Détails">
-                                    <i class="fas fa-info-circle"></i>
-                                </a>
-                            
-                                <!-- Bouton Modifier avec icône -->
-                                <a href="{{ url_for('edit_mission', id=mission.id) }}" class="btn btn-warning" title="Modifier">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            
-                                <!-- Bouton Supprimer avec icône -->
-                                <form action="{{ url_for('delete_mission', id=mission.id) }}" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-danger" title="Supprimer" onclick="return confirm('Voulez-vous vraiment supprimer cette mission ?');">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </td>
-                            
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <a href="{{ url_for('addMission') }}" class="btn btn-primary my-3">Ajouter une nouvelle Mission</a>
-        </div>
-    </div>
+    <h1>Liste des Missions</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Responsable</th>
+                <th>Projet</th>
+                <th>Chef de Projet</th>
+                <th>Date d'Enregistrement</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mission in missions %}
+            <tr>
+                <td>{{ mission.id }}</td>
+                <td>{{ mission.responsable.nom }} {{ mission.responsable.prenom }}</td>
+                <td>{{ mission.projet }}</td>
+                <td>{{ mission.chef_de_projet }}</td>
+                <td>{{ mission.date_enregistrement }}</td>
+                <td>
+                    <a href="{{ url_for('edit_mission', mission_id=mission.id) }}">Modifier</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('addMission') }}">Ajouter une nouvelle mission</a>
 </body>
 </html>
