@@ -1,76 +1,136 @@
-<!-- templates/mission_new.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter une Nouvelle Mission</title>
+    <title>Ajouter Mission</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #004d99;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header img {
+            width: 50px;
+            height: auto;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #004d99;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #003366;
+        }
+    </style>
 </head>
 <body>
+
+<header>
+    <img src="/static/images/BTSCOM.jpg" alt="Logo de l'entreprise">
+    <nav>
+        <a href="{{ url_for('gererMissions') }}">Gérer les Missions</a>
+        <a href="{{ url_for('gererUsers') }}">Gérer les Utilisateurs</a>
+    </nav>
+</header>
+
+<div class="container">
     <h1>Ajouter une Nouvelle Mission</h1>
-    <form method="POST">
+
+    <form action="{{ url_for('addMission') }}" method="POST">
         {{ form.hidden_tag() }}
         
-        <label for="responsable_id">Responsable :</label>
-        {{ form.responsable_id() }}
-        <br>
+        <label for="projet">Projet</label>
+        {{ form.projet(class="form-control") }}
 
-        <label for="projet">Projet :</label>
-        {{ form.projet() }}
-        <br>
+        <label for="chef_de_projet">Chef de Projet</label>
+        {{ form.chef_de_projet(class="form-control") }}
 
-        <label for="chef_de_projet">Chef de Projet :</label>
-        {{ form.chef_de_projet() }}
-        <br>
+        <label for="chauffeur">Chauffeur</label>
+        {{ form.chauffeur(class="form-control") }}
 
-        <label for="chauffeur">Chauffeur :</label>
-        {{ form.chauffeur() }}
-        <br>
+        <label for="marque_vehicule">Marque de Véhicule</label>
+        {{ form.marque_vehicule(class="form-control") }}
 
-        <label for="marque_vehicule">Marque de véhicule :</label>
-        {{ form.marque_vehicule() }}
-        <br>
+        <label for="matricule_vehicule">Matricule de Véhicule</label>
+        {{ form.matricule_vehicule(class="form-control") }}
 
-        <label for="matricule_vehicule">Matricule de véhicule :</label>
-        {{ form.matricule_vehicule() }}
-        <br>
+        <label for="designation_travaux">Désignation des Travaux</label>
+        {{ form.designation_travaux(class="form-control") }}
 
-        <label for="designation_travaux">Désignation des travaux :</label>
-        {{ form.designation_travaux() }}
-        <br>
+        <label for="site_client">Site/Client</label>
+        {{ form.site_client(class="form-control") }}
 
-        <label for="site_client">Site ou Client :</label>
-        {{ form.site_client() }}
-        <br>
+        <label for="ville_depart">Ville de Départ</label>
+        {{ form.ville_depart(class="form-control") }}
 
-        <label for="ville_depart">Ville de départ :</label>
-        {{ form.ville_depart() }}
-        <br>
+        <label for="ville_arrivee">Ville d'Arrivée</label>
+        {{ form.ville_arrivee(class="form-control") }}
 
-        <label for="ville_arrivee">Ville d'arrivée :</label>
-        {{ form.ville_arrivee() }}
-        <br>
+        <label for="date_debut">Date de Début</label>
+        {{ form.date_debut(class="form-control") }}
 
-        <label for="date_debut">Date de début :</label>
-        {{ form.date_debut() }}
-        <br>
+        <label for="date_fin">Date de Fin</label>
+        {{ form.date_fin(class="form-control") }}
 
-        <label for="date_fin">Date de fin :</label>
-        {{ form.date_fin() }}
-        <br>
+        <label for="recharge_gasoil">Recharge Gasoil</label>
+        {{ form.recharge_gasoil(class="form-control") }}
 
-        <label for="recharge_gasoil">Recharge gasoil :</label>
-        {{ form.recharge_gasoil() }}
-        <br>
+        <label for="etat">État</label>
+        {{ form.etat(class="form-control") }}
 
-        <label for="equipe_ids">Équipe :</label>
-        {{ form.equipe_ids() }}
-        <br>
-
-        <button type="submit">Ajouter la mission</button>
+        <button type="submit">Ajouter Mission</button>
     </form>
+</div>
 
-    <br>
-    <a href="{{ url_for('gererMissions') }}">Retour à la liste des missions</a>
 </body>
 </html>

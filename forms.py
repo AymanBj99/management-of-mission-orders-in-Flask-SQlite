@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, FloatField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import DataRequired
+from modele import User  # Assurez-vous que 'User' est bien importé
 
 class MissionForm(FlaskForm):
     responsable_id = SelectField('Responsable', coerce=int, validators=[DataRequired()])
@@ -16,5 +17,13 @@ class MissionForm(FlaskForm):
     date_debut = DateField('Date de début', validators=[DataRequired()])
     date_fin = DateField('Date de fin', validators=[DataRequired()])
     recharge_gasoil = FloatField('Recharge gasoil', default=0.0)
+    etat = SelectField('État', choices=[('en attente', 'En attente'), ('validée', 'Validée'), ('en cours', 'En cours')], default='en attente')
     equipe_ids = SelectMultipleField('Membres de l\'équipe', coerce=int)  # Multisélection
     submit = SubmitField('Enregistrer')
+    
+    def __init__(self, *args, **kwargs):
+        super(MissionForm, self).__init__(*args, **kwargs)
+        
+        # Récupérer dynamiquement les utilisateurs pour 'responsable_id' et 'equipe_ids'
+        self.responsable_id.choices = [(user.idUser, f"{user.nom} {user.prenom}") for user in User.query.all()]
+        self.equipe_ids.choices = [(user.idUser, f"{user.nom} {user.prenom}") for user in User.query.all()]
