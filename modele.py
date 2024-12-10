@@ -42,6 +42,7 @@ class Mission(db.Model):
     date_debut = db.Column(db.Date, nullable=False)
     date_fin = db.Column(db.Date, nullable=False)
     recharge_gasoil = db.Column(db.Float, default=0.0)
+    etat = db.Column(db.String(50), default="en attente")
 
     responsable = db.relationship("User", backref="missions", foreign_keys=[responsable_id])
     equipe = db.relationship("Equipe", back_populates="mission", cascade="all, delete-orphan")
