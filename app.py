@@ -151,35 +151,44 @@ def mission_details(id):
     return render_template('afficherMission.html', mission=mission)
 
 #Modifier une mission
-@app.route('/edit_mission/<int:id>', methods=['GET', 'POST'])
+@app.route('/mission/edit/<int:id>', methods=['GET', 'POST'])
 def edit_mission(id):
     mission = Mission.query.get_or_404(id)
-    form = MissionForm(obj=mission)
+    users = User.query.all()
 
-    # Remplir le champ responsable avec les utilisateurs
-    form.responsable_id.choices = [(user.idUser, f"{user.nom} {user.prenom}") for user in User.query.all()]
+    if request.method == 'POST':
+        try:
+            # Conversion des dates en objets date
+            date_debut = datetime.strptime(request.form['date_debut'], '%Y-%m-%d').date()
+            date_fin = datetime.strptime(request.form['date_fin'], '%Y-%m-%d').date()
 
-    if form.validate_on_submit():
-        mission.responsable_id = form.responsable_id.data
-        mission.projet = form.projet.data
-        mission.chef_de_projet = form.chef_de_projet.data
-        mission.chauffeur = form.chauffeur.data
-        mission.marque_vehicule = form.marque_vehicule.data
-        mission.matricule_vehicule = form.matricule_vehicule.data
-        mission.designation_travaux = form.designation_travaux.data
-        mission.site_client = form.site_client.data
-        mission.ville_depart = form.ville_depart.data
-        mission.ville_arrivee = form.ville_arrivee.data
-        mission.date_debut = form.date_debut.data
-        mission.date_fin = form.date_fin.data
-        mission.recharge_gasoil = form.recharge_gasoil.data
-        #mission.etat = form.etat.data  # Changer l'état si nécessaire
-        db.session.commit()
-        flash("Mission mise à jour avec succès", "success")
-        return redirect(url_for('gererMissions'))
+            # Mise à jour des champs
+            mission.projet = request.form['projet']
+            mission.chef_de_projet = request.form['chef_de_projet']
+            mission.chauffeur = request.form['chauffeur']
+            mission.marque_vehicule = request.form['marque_vehicule']
+            mission.matricule_vehicule = request.form['matricule_vehicule']
+            mission.designation_travaux = request.form['designation_travaux']
+            mission.site_client = request.form['site_client']
+            mission.ville_depart = request.form['ville_depart']
+            mission.ville_arrivee = request.form['ville_arrivee']
+            mission.date_debut = date_debut  # Conversion appliquée
+            mission.date_fin = date_fin      # Conversion appliquée
+            mission.recharge_gasoil = float(request.form['recharge_gasoil'])
+            mission.responsable_id = int(request.form['responsable_id'])
+            mission.user_ids = request.form.getlist('users')
 
-    return render_template('addMission.html', form=form, mission=mission)
+            # Sauvegarde des modifications
+            db.session.commit()
+            flash(('success', 'Mission mise à jour avec succès !'))
+            return redirect(url_for('gererMissions'))
 
+        except Exception as e:
+            # Gestion des erreurs
+            flash(('danger', f"Erreur lors de la mise à jour : {str(e)}"))
+            db.session.rollback()
+
+    return render_template('editMission.html', mission=mission, users=users)
 
 
 #Supprimer mission
@@ -324,7 +333,6 @@ def employe():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.drop_all()
         db.create_all()
         insert_admins()     
     app.run(debug=True)
