@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 from db import db
 
-
 class User(db.Model):
     __tablename__ = 'user'
     
@@ -42,6 +41,17 @@ class Mission(db.Model):
     
     # Relation avec les utilisateurs via la table de jointure MissionUser
     users = db.relationship('MissionUser', back_populates='mission')
+    responsable = db.relationship('User', foreign_keys=[responsable_id])
+
+    @property
+    def fonction_responsable(self):
+        return self.responsable.fonction if self.responsable else ""
+
+    @property
+    def nombre_jours(self):
+        if self.date_debut and self.date_fin:
+            return (self.date_fin - self.date_debut).days
+        return 0
 
 class MissionUser(db.Model):
     __tablename__ = 'mission_user'
