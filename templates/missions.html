@@ -73,15 +73,20 @@
         .actions a:hover {
             text-decoration: underline;
         }
-        .add-btn {
-            background-color: #004d99;
-            color: white;
+        button, .btn-primary {
             padding: 10px 20px;
-            text-decoration: none;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
         }
-        .add-btn:hover {
-            background-color: #003366;
+        .btn-primary {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #218838;
         }
 
         .more-info {
@@ -123,14 +128,19 @@
     {% endif %}
     {% endwith %}
 
+    <div class="text-end mb-3">
+        <a href="{{ url_for('add_mission') }}" class="btn btn-primary">Ajouter une Nouvelle Mission</a>
+    </div>
+
     <table>
         <thead>
             <tr>
-                <th>ID</th>
+                <th>N° d'Ordre</th>
                 <th>Responsable</th>
+                <th>Fonction</th>
                 <th>Projet</th>
                 <th>Chef de Projet</th>
-                <th>Etat</th>
+                <th>Nombre de Jours</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -138,45 +148,28 @@
             {% for mission in missions %}
             <tr>
                 <td>{{ mission.id }}</td>
-                <td>{{ mission.responsable.nom }} {{ mission.responsable.prenom }}</td>
+                <td>{{ mission.responsable_id.nom }} {{ mission.responsable_id.prenom }}</td>
+                <td>{{ mission.responsable_id.fonction }}</td>
                 <td>{{ mission.projet }}</td>
                 <td>{{ mission.chef_de_projet }}</td>
-                <td>{{ mission.etat }}</td>
+                <td>{{ mission.nombre_jours }}</td>
                 <td class="actions">
-                    <!-- Bouton Détails avec icône -->
-                    <a href="{{ url_for('mission_details', id=mission.id) }}" class="btn btn-info" title="Détails">
-                        <i class="fas fa-info-circle"></i>
-                    </a>
-                
-                    <!-- Bouton Modifier avec icône -->
-                    <a href="{{ url_for('edit_mission', id=mission.id) }}" class="btn btn-warning" title="Modifier">
+                    <a href="{{ url_for('edit_mission', id=mission.id) }}" class="btn btn-warning">
                         <i class="fas fa-edit"></i>
                     </a>
-                
-                    <!-- Bouton Supprimer avec icône -->
-                    <form action="{{ url_for('delete_mission', id=mission.id) }}" method="POST" style="display: inline;">
-                        <button type="submit" class="btn btn-danger" title="Supprimer" onclick="return confirm('Voulez-vous vraiment supprimer cette mission ?');">
+                    <a href="{{ url_for('mission_details', id=mission.id) }}" class="btn btn-info">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                    <form action="{{ url_for('delete_mission', id=mission.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Supprimer cette mission ?');">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </form>
                 </td>
             </tr>
-            <tr class="more-info" id="more-info-{{ mission.id }}">
-                <td colspan="6">
-                    <strong>Désignation des Travaux:</strong> {{ mission.designation_travaux }}<br>
-                    <strong>Site/Client:</strong> {{ mission.site_client }}<br>
-                    <strong>Ville de Départ:</strong> {{ mission.ville_depart }}<br>
-                    <strong>Ville d'Arrivée:</strong> {{ mission.ville_arrivee }}<br>
-                    <strong>Date de Début:</strong> {{ mission.date_debut }}<br>
-                    <strong>Date de Fin:</strong> {{ mission.date_fin }}<br>
-                    <strong>Recharge Gasoil:</strong> {{ mission.recharge_gasoil }}<br>
-                </td>
-            </tr>
             {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ url_for('addMission') }}" class="add-btn">Ajouter une Nouvelle Mission</a>
 </div>
 
 <script>

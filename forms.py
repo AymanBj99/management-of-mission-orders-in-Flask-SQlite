@@ -1,29 +1,26 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, FloatField, SelectField, SelectMultipleField, SubmitField
-from wtforms.validators import DataRequired
-from modele import User  # Assurez-vous que 'User' est bien importé
+from wtforms import StringField, SelectField, DateField, IntegerField, FloatField, SubmitField, SelectMultipleField
+from wtforms.validators import DataRequired, Length
 
 class MissionForm(FlaskForm):
-    responsable_id = SelectField('Responsable', coerce=int, validators=[DataRequired()])
-    projet = StringField('Projet', validators=[DataRequired()])
-    chef_de_projet = StringField('Chef de projet', validators=[DataRequired()])
-    chauffeur = StringField('Chauffeur', validators=[DataRequired()])
-    marque_vehicule = StringField('Marque de véhicule', validators=[DataRequired()])
-    matricule_vehicule = StringField('Matricule de véhicule', validators=[DataRequired()])
-    designation_travaux = StringField('Désignation des travaux', validators=[DataRequired()])
-    site_client = StringField('Site/Client', validators=[DataRequired()])
-    ville_depart = StringField('Ville de départ', validators=[DataRequired()])
-    ville_arrivee = StringField('Ville d\'arrivée', validators=[DataRequired()])
-    date_debut = DateField('Date de début', validators=[DataRequired()])
-    date_fin = DateField('Date de fin', validators=[DataRequired()])
-    recharge_gasoil = FloatField('Recharge gasoil', default=0.0)
-    etat = SelectField('État', choices=[('en attente', 'En attente'), ('validée', 'Validée'), ('en cours', 'En cours')], default='en attente')
-    equipe_ids = SelectMultipleField('Membres de l\'équipe', coerce=int)  # Multisélection
-    submit = SubmitField('Enregistrer')
+    # Champs liés à la mission
+    projet = StringField('Nom du Projet', validators=[DataRequired(), Length(max=100)])
+    chef_de_projet = StringField('Chef de Projet', validators=[DataRequired(), Length(max=100)])
+    chauffeur = StringField('Chauffeur', validators=[DataRequired(), Length(max=100)])
+    marque_vehicule = StringField('Marque du Véhicule', validators=[DataRequired(), Length(max=50)])
+    matricule_vehicule = StringField('Matricule du Véhicule', validators=[DataRequired(), Length(max=20)])
+    designation_travaux = StringField('Désignation des Travaux', validators=[DataRequired(), Length(max=200)])
+    site_client = StringField('Site ou Client', validators=[DataRequired(), Length(max=100)])
+    ville_depart = StringField('Ville de Départ', validators=[DataRequired(), Length(max=50)])
+    ville_arrivee = StringField('Ville d\'Arrivée', validators=[DataRequired(), Length(max=50)])
+    date_debut = DateField('Date de Début', validators=[DataRequired()], format='%Y-%m-%d')
+    date_fin = DateField('Date de Fin', validators=[DataRequired()], format='%Y-%m-%d')
+    recharge_gasoil = FloatField('Recharge Gasoil (L)', validators=[DataRequired()])
     
-    def __init__(self, *args, **kwargs):
-        super(MissionForm, self).__init__(*args, **kwargs)
-        
-        # Récupérer dynamiquement les utilisateurs pour 'responsable_id' et 'equipe_ids'
-        self.responsable_id.choices = [(user.idUser, f"{user.nom} {user.prenom}") for user in User.query.all()]
-        self.equipe_ids.choices = [(user.idUser, f"{user.nom} {user.prenom}") for user in User.query.all()]
+    # Champs liés au responsable
+    responsable_id = SelectField('Responsable', coerce=int, validators=[DataRequired()])
+    
+    # Nouveau champ pour sélectionner l'équipe accompagnante
+    equipe_ids = SelectMultipleField('Équipe Accompagnante', coerce=int, validators=[DataRequired()])
+    
+    submit = SubmitField('Enregistrer Mission')

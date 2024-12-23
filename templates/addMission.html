@@ -3,134 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter Mission</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Ajouter une Mission</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
             margin: 0;
             padding: 0;
-        }
-        header {
-            background-color: #004d99;
-            color: #fff;
-            padding: 10px 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            min-height: 100vh;
         }
-        header img {
-            width: 50px;
-            height: auto;
+
+        .container {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
         }
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
+
         h1 {
             text-align: center;
             color: #333;
         }
-        .container {
-            width: 80%;
-            margin: 30px auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+
         form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
         }
+
         label {
-            font-size: 16px;
+            margin-top: 10px;
             font-weight: bold;
+            color: #555;
         }
-        input, select, textarea {
+
+        input, select {
             padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ddd;
+            margin-top: 5px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-        }
-        button {
-            background-color: #004d99;
-            color: white;
-            padding: 10px 20px;
             font-size: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
         button:hover {
-            background-color: #003366;
+            background-color: #0056b3;
+        }
+
+        select[multiple] {
+            height: 100px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Ajouter une Mission</h1>
+        <form action="/addmission" method="POST">
+            <label for="projet">Projet:</label>
+            <input type="text" id="projet" name="projet" required>
 
-<header>
-    <img src="/static/images/BTSCOM.jpg" alt="Logo de l'entreprise">
-    <nav>
-        <a href="{{ url_for('gererMissions') }}">Gérer les Missions</a>
-        <a href="{{ url_for('gererUsers') }}">Gérer les Utilisateurs</a>
-    </nav>
-</header>
+            <label for="chef_de_projet">Chef de projet:</label>
+            <input type="text" id="chef_de_projet" name="chef_de_projet" required>
 
-<div class="container">
-    <h1>Ajouter une Nouvelle Mission</h1>
+            <label for="chauffeur">Chauffeur:</label>
+            <input type="text" id="chauffeur" name="chauffeur" required>
 
-    <form action="{{ url_for('addMission') }}" method="POST">
-        {{ form.hidden_tag() }}
-        
-        <label for="projet">Projet</label>
-        {{ form.projet(class="form-control") }}
+            <label for="marque_vehicule">Marque du véhicule:</label>
+            <input type="text" id="marque_vehicule" name="marque_vehicule" required>
 
-        <label for="chef_de_projet">Chef de Projet</label>
-        {{ form.chef_de_projet(class="form-control") }}
+            <label for="matricule_vehicule">Matricule du véhicule:</label>
+            <input type="text" id="matricule_vehicule" name="matricule_vehicule" required>
 
-        <label for="chauffeur">Chauffeur</label>
-        {{ form.chauffeur(class="form-control") }}
+            <label for="designation_travaux">Désignation des travaux:</label>
+            <input type="text" id="designation_travaux" name="designation_travaux" required>
 
-        <label for="marque_vehicule">Marque de Véhicule</label>
-        {{ form.marque_vehicule(class="form-control") }}
+            <label for="site_client">Site client:</label>
+            <input type="text" id="site_client" name="site_client" required>
 
-        <label for="matricule_vehicule">Matricule de Véhicule</label>
-        {{ form.matricule_vehicule(class="form-control") }}
+            <label for="ville_depart">Ville de départ:</label>
+            <input type="text" id="ville_depart" name="ville_depart" required>
 
-        <label for="designation_travaux">Désignation des Travaux</label>
-        {{ form.designation_travaux(class="form-control") }}
+            <label for="ville_arrivee">Ville d'arrivée:</label>
+            <input type="text" id="ville_arrivee" name="ville_arrivee" required>
 
-        <label for="site_client">Site/Client</label>
-        {{ form.site_client(class="form-control") }}
+            <label for="date_debut">Date de début:</label>
+            <input type="date" id="date_debut" name="date_debut" required>
 
-        <label for="ville_depart">Ville de Départ</label>
-        {{ form.ville_depart(class="form-control") }}
+            <label for="date_fin">Date de fin:</label>
+            <input type="date" id="date_fin" name="date_fin" required>
 
-        <label for="ville_arrivee">Ville d'Arrivée</label>
-        {{ form.ville_arrivee(class="form-control") }}
+            <label for="recharge_gasoil">Recharge de gasoil:</label>
+            <input type="number" id="recharge_gasoil" name="recharge_gasoil" step="0.01" required>
 
-        <label for="date_debut">Date de Début</label>
-        {{ form.date_debut(class="form-control") }}
+            <label for="responsable_id">Responsable:</label>
+            <input type="number" id="responsable_id" name="responsable_id" required>
 
-        <label for="date_fin">Date de Fin</label>
-        {{ form.date_fin(class="form-control") }}
+            <label for="users">Sélectionner les utilisateurs:</label>
+            <select name="users" multiple>
+                {% for user in users %}
+                    <option value="{{ user.idUser }}">{{ user.nom }} {{ user.prenom }}</option>
+                {% endfor %}
+            </select>
 
-        <label for="recharge_gasoil">Recharge Gasoil</label>
-        {{ form.recharge_gasoil(class="form-control") }}
-
-        <label for="etat">État</label>
-        {{ form.etat(class="form-control") }}
-
-        <button type="submit">Ajouter Mission</button>
-    </form>
-</div>
-
+            <button type="submit">Ajouter la mission</button>
+        </form>
+    </div>
 </body>
 </html>
