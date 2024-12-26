@@ -150,8 +150,8 @@
             {% for mission in missions %}
             <tr>
                 <td>{{ mission.id }}</td>
-                <td>{{ mission.responsable_id.nom }} {{ mission.responsable_id.prenom }}</td>
-                <td>{{ mission.responsable_id.fonction }}</td>
+                <td>{{ mission.responsable.nom }} {{ mission.responsable.prenom }}</td>
+                <td>{{ mission.responsable.fonction }}</td>
                 <td>{{ mission.projet }}</td>
                 <td>{{ mission.chef_de_projet }}</td>
                 <td>{{ mission.nombre_jours }}</td>

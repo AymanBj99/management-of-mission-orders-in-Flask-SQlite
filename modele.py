@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 from db import db
 
+# Table User
 class User(db.Model):
     __tablename__ = 'user'
     
@@ -17,9 +18,14 @@ class User(db.Model):
     tel = db.Column(db.String(255), nullable=False)
     rib = db.Column(db.String(255), nullable=False)
     
-    # Relation avec les missions via la table de jointure MissionUser
+    # Relation avec les missions (responsable)
+    missions_responsable = db.relationship('Mission', back_populates='responsable', lazy='dynamic')
+
+    # Relation avec missions via la table de jointure
     missions = db.relationship('MissionUser', back_populates='user')
 
+
+# Table Mission
 class Mission(db.Model):
     __tablename__ = 'mission'
     
@@ -36,23 +42,37 @@ class Mission(db.Model):
     date_debut = db.Column(db.Date, nullable=False)
     date_fin = db.Column(db.Date, nullable=False)
     recharge_gasoil = db.Column(db.Float, nullable=False)
+
+    # Clé étrangère vers User pour le responsable
     responsable_id = db.Column(db.Integer, db.ForeignKey('user.idUser'), nullable=False)
-    date_enregistrement = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc)) 
-    
-    # Relation avec les utilisateurs via la table de jointure MissionUser
-    users = db.relationship('MissionUser', back_populates='mission')
-    responsable = db.relationship('User', foreign_keys=[responsable_id])
+
+    # Date d'enregistrement
+    date_enregistrement = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    # Relations
+    responsable = db.relationship('User', foreign_keys=[responsable_id], back_populates='missions_responsable')
+    users = db.relationship('MissionUser', back_populates='mission', cascade='all, delete-orphan')
+
+    # Propriétés calculées
+    @property
+    def responsable_nom(self):
+        # Récupère nom et prénom
+        return f"{self.responsable.nom} {self.responsable.prenom}" if self.responsable else "N/A"
 
     @property
     def fonction_responsable(self):
-        return self.responsable.fonction if self.responsable else ""
+        # Récupère la fonction
+        return self.responsable.fonction if self.responsable else "N/A"
 
     @property
     def nombre_jours(self):
+        # Calcul automatique du nombre de jours entre date_debut et date_fin
         if self.date_debut and self.date_fin:
             return (self.date_fin - self.date_debut).days
         return 0
 
+
+# Table de jointure entre Mission et User
 class MissionUser(db.Model):
     __tablename__ = 'mission_user'
     

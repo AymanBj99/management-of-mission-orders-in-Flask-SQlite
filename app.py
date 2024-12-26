@@ -88,7 +88,7 @@ def gererUsers():
 @app.route('/addmission', methods=['GET', 'POST'])
 def add_mission():
     if request.method == 'POST':
-        # Récupération des données du formulaire
+        # Récupérer les données du formulaire
         projet = request.form['projet']
         chef_de_projet = request.form['chef_de_projet']
         chauffeur = request.form['chauffeur']
@@ -98,14 +98,14 @@ def add_mission():
         site_client = request.form['site_client']
         ville_depart = request.form['ville_depart']
         ville_arrivee = request.form['ville_arrivee']
-        date_debut = datetime.strptime(request.form['date_debut'], '%Y-%m-%d')
-        date_fin = datetime.strptime(request.form['date_fin'], '%Y-%m-%d')
+        date_debut = request.form['date_debut']
+        date_fin = request.form['date_fin']
         recharge_gasoil = float(request.form['recharge_gasoil'])
-        responsable_id = int(request.form['responsable_id'])  # ID de l'utilisateur responsable
-        users_ids = request.form.getlist('users')  # Liste d'IDs des utilisateurs à affecter à cette mission
+        responsable_id = int(request.form['responsable_id'])
+        user_ids = request.form.getlist('users')
 
-        # Créer la mission
-        new_mission = Mission(
+        # Créer une nouvelle mission
+        nouvelle_mission = Mission(
             projet=projet,
             chef_de_projet=chef_de_projet,
             chauffeur=chauffeur,
@@ -115,33 +115,26 @@ def add_mission():
             site_client=site_client,
             ville_depart=ville_depart,
             ville_arrivee=ville_arrivee,
-            date_debut=date_debut,
-            date_fin=date_fin,
+            date_debut=datetime.strptime(date_debut, '%Y-%m-%d').date(),
+            date_fin=datetime.strptime(date_fin, '%Y-%m-%d').date(),
             recharge_gasoil=recharge_gasoil,
             responsable_id=responsable_id
         )
-
-        # Ajouter la mission à la base de données
-        db.session.add(new_mission)
+        db.session.add(nouvelle_mission)
         db.session.commit()
 
-        # Associer les utilisateurs à la mission
-        for user_id in users_ids:
-            user = User.query.get(user_id)
-            if user:
-                mission_user = MissionUser(mission_id=new_mission.id, user_id=user.idUser)
-                db.session.add(mission_user)
+        # Associer les utilisateurs sélectionnés
+        for user_id in user_ids:
+            relation = MissionUser(mission_id=nouvelle_mission.id, user_id=int(user_id))
+            db.session.add(relation)
 
-        # Sauvegarder les changements
         db.session.commit()
-
         flash('Mission ajoutée avec succès!', 'success')
         return redirect(url_for('gererMissions'))
 
-    # Récupérer tous les utilisateurs pour les afficher dans le formulaire
+    # Envoyer la liste des utilisateurs à la page
     users = User.query.all()
-    return render_template('addmission.html', users=users)
-
+    return render_template('addMission.html', users=users)
 
 #afficher mission 
 @app.route('/mission_details/<int:id>', methods=['GET'])
