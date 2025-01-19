@@ -76,7 +76,7 @@
             background-color: #f1f1f1;
         }
 
-        .btn-info {
+        .btn-info, .btn-success {
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
@@ -86,7 +86,7 @@
             text-decoration: none;
         }
 
-        .btn-info:hover {
+        .btn-info:hover, .btn-success:hover {
             background-color: #138496;
         }
 
@@ -124,6 +124,7 @@
                 <th>Projet</th>
                 <th>Chef de Projet</th>
                 <th>Nombre de Jours</th>
+                <th>État</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -134,10 +135,24 @@
                 <td>{{ mission.projet }}</td>
                 <td>{{ mission.chef_de_projet }}</td>
                 <td>{{ mission.nombre_jours }}</td>
+                <td>{{ mission.etat }}</td>
                 <td>
+                    <!-- Bouton Détails (toujours visible) -->
                     <a href="{{ url_for('mission_details', id=mission.id) }}" class="btn btn-info">
                         <i class="fas fa-info-circle"></i> Détails
                     </a>
+                    
+                    {% if mission.etat != 'validée' %}
+                    <!-- Bouton Valider (si l'état n'est pas validée) -->
+                    <form action="{{ url_for('valider_mission', mission_id=mission.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check-circle"></i> Valider
+                        </button>
+                    </form>
+                    {% else %}
+                    <!-- Affichage de "Validée" si déjà validée -->
+                    
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

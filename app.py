@@ -335,6 +335,14 @@ def mes_missions():
     else:
         flash('Veuillez vous connecter pour accéder à cette page.', 'error')
         return redirect(url_for('login'))
+    
+@app.route('/valider_mission/<int:mission_id>', methods=['POST'])
+def valider_mission(mission_id):
+    mission = Mission.query.get(mission_id)
+    if mission:
+        mission.etat = 'validée'  # Mise à jour de l'état de la mission
+        db.session.commit()  # Sauvegarder les changements dans la base de données
+    return redirect(url_for('mes_missions'))  # Rediriger vers la page des missions
 
 
 if __name__ == '__main__':
