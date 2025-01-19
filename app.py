@@ -328,8 +328,8 @@ def employe():
 @login_required
 def mes_missions():
     # Filtrer les missions en fonction de l'utilisateur connecté
-    missions = Mission.query.filter_by(responsable_id=current_user.id).all()
-    return render_template('mes_missions.html', missions=missions)
+    missions = Mission.query.filter_by(responsable_id=current_user.idUser).all()
+    return render_template('MissionsEmploye.html', missions=missions)
 
 
 if __name__ == '__main__':
