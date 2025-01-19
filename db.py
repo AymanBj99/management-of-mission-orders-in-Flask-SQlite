@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
+from flask_migrate import Migrate
 
 # Créez une instance de Flask
 app = Flask(__name__)
@@ -11,6 +12,7 @@ app.secret_key = 'super secret key'
 
 # Créez l'instance SQLAlchemy
 db = SQLAlchemy()
+migrate = Migrate(app, db)
 
 # Initialisez l'application avec SQLAlchemy
 db.init_app(app)

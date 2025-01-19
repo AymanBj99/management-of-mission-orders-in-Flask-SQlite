@@ -126,7 +126,7 @@
 
             <div class="btn-container">
                 <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-                <a href="{{ url_for('gererUsers') }}" class="btn btn-secondary cancel-btn">Annuler</a>
+                <a href="{{ url_for('mes_missions') if not session.get('is_admin') else url_for('gererMissions') }}" class="btn btn-secondary cancel-btn">Annuler</a>
             </div>
         </form>
     </div>

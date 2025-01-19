@@ -44,6 +44,7 @@ class Mission(db.Model):
     date_debut = db.Column(db.Date, nullable=False)
     date_fin = db.Column(db.Date, nullable=False)
     recharge_gasoil = db.Column(db.Float, nullable=False)
+    etat = db.Column(db.String(50), default="en attente") 
 
     # Clé étrangère vers User pour le responsable
     responsable_id = db.Column(db.Integer, db.ForeignKey('user.idUser'), nullable=False)

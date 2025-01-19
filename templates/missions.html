@@ -102,6 +102,11 @@
             color: #004d99;
             font-weight: bold;
         }
+
+        .status {
+            font-weight: bold;
+            color: #ff6600;
+        }
     </style>
 </head>
 <body>
@@ -112,7 +117,6 @@
         <a href="{{ url_for('gererMissions') }}">Gérer les Missions</a>
         <a href="{{ url_for('gererUsers') }}">Gérer les Utilisateurs</a>
         <a href="/logout" class="btn btn-danger">Déconnexion</a>
-
     </nav>
 </header>
 
@@ -143,6 +147,7 @@
                 <th>Projet</th>
                 <th>Chef de Projet</th>
                 <th>Nombre de Jours</th>
+                <th>État</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -155,7 +160,13 @@
                 <td>{{ mission.projet }}</td>
                 <td>{{ mission.chef_de_projet }}</td>
                 <td>{{ mission.nombre_jours }}</td>
+                <td class="status">{{ mission.etat }}</td>
                 <td class="actions">
+                    {% if mission.etat == "en attente" %}
+                    <a href="{{ url_for('validate_mission', id=mission.id) }}" class="btn btn-success">
+                        <i class="fas fa-check"></i> Valider
+                    </a>
+                    {% endif %}
                     <a href="{{ url_for('edit_mission', id=mission.id) }}" class="btn btn-warning">
                         <i class="fas fa-edit"></i>
                     </a>
