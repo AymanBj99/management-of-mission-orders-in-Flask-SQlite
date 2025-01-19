@@ -17,7 +17,8 @@ class User(db.Model):
     cin = db.Column(db.String(255), unique=True, nullable=False)
     tel = db.Column(db.String(255), nullable=False)
     rib = db.Column(db.String(255), nullable=False)
-    
+    role = db.Column(db.String(50), nullable=False, default="user")
+
     # Relation avec les missions (responsable)
     missions_responsable = db.relationship('Mission', back_populates='responsable', lazy='dynamic')
 

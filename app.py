@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
+from flask_login import login_required, current_user, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from modele import User, Mission, MissionUser
 from db import db, app
@@ -133,7 +134,7 @@ def add_mission():
         return redirect(url_for('gererMissions'))
 
     # Envoyer la liste des utilisateurs à la page
-    users = User.query.all()
+    users = User.query.filter(User.role != 'admin').all()
     return render_template('addMission.html', users=users)
 
 #afficher mission 
@@ -322,6 +323,13 @@ def employe():
         flash('Veuillez vous connecter pour accéder à cette page.', 'error')
         return redirect(url_for('login'))
 
+
+@app.route('/mes_missions')
+@login_required
+def mes_missions():
+    # Filtrer les missions en fonction de l'utilisateur connecté
+    missions = Mission.query.filter_by(responsable_id=current_user.id).all()
+    return render_template('mes_missions.html', missions=missions)
 
 
 if __name__ == '__main__':
