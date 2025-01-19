@@ -1,5 +1,4 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
-from flask_login import login_required, current_user, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from modele import User, Mission, MissionUser
 from db import db, app
@@ -325,11 +324,22 @@ def employe():
 
 
 @app.route('/mes_missions')
-@login_required
 def mes_missions():
-    # Filtrer les missions en fonction de l'utilisateur connecté
-    missions = Mission.query.filter_by(responsable_id=current_user.idUser).all()
-    return render_template('MissionsEmploye.html', missions=missions)
+    # Vérifier si l'utilisateur est connecté via la session
+    if 'email' in session:
+        email = session['email']
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            # Filtrer les missions associées à cet utilisateur
+            missions = Mission.query.filter_by(responsable_id=user.idUser).all()
+            return render_template('MissionsEmploye.html', missions=missions)
+        else:
+            flash('Utilisateur introuvable.', 'error')
+            return redirect(url_for('login'))
+    else:
+        flash('Veuillez vous connecter pour accéder à cette page.', 'error')
+        return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
