@@ -114,7 +114,10 @@
             </tbody>
         </table>
 
-        <a href="{{ url_for('gererMissions') }}" class="btn-back"><i class="fas fa-arrow-left"></i> Retour à la Liste</a>
+        <a href="{{ url_for('mes_missions') if not session.get('is_admin') else url_for('gererMissions') }}" class="btn btn-secondary">
+            Retour à la liste
+        </a>
+        
     </div>
 </body>
 </html>

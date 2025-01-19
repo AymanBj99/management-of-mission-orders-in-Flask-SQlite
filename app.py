@@ -9,28 +9,18 @@ from forms import MissionForm
 
 
 
-# Route de connexion
 @app.route('/')
 def index():
     if 'email' in session:
-        # Récupérer l'utilisateur connecté
-        email = session['email']
-        user = User.query.filter_by(email=email).first()
-
-        # Vérifier si l'utilisateur est un admin (en comparant avec des e-mails d'admins prédéfinis)
-        admin_emails = ['admin1@example.com', 'admin2@example.com']  # Liste des e-mails admins définis manuellement
-
-        if user and email in admin_emails:
-            # Si c'est un admin, rediriger vers l'interface admin
+        if session.get('is_admin'):
+            # Rediriger vers l'interface admin
             return redirect(url_for('gererMissions'))
-        elif user:
-            # Si c'est un employé, rediriger vers l'interface employé
-            return redirect(url_for('employe'))
         else:
-            flash('Utilisateur non trouvé', 'error')
-            return redirect(url_for('login'))
+            # Rediriger vers l'interface employé
+            return redirect(url_for('employe'))
     else:
         return redirect(url_for('login'))  # Rediriger vers la page de connexion si non connecté
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -45,12 +35,17 @@ def login():
         if user and check_password_hash(user.password_hash, password):
             session['email'] = user.email  # Stocker l'e-mail dans la session
             
+            # Vérifier si l'utilisateur est admin
+            admin_emails = ['admin1@example.com', 'admin2@example.com']
+            session['is_admin'] = email in admin_emails
+
             flash('Connexion réussie', 'success')
             return redirect(url_for('index'))  # Rediriger vers la route index pour gérer la redirection
         else:
             flash('E-mail ou mot de passe invalide', 'error')
 
     return render_template('login.html')  # Rendre le formulaire de connexion
+
 
 
 
