@@ -3,121 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails de la Mission</title>
+    <title>Ordre de Mission</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
             background-color: #f4f4f9;
+            margin: 20px;
         }
-        h2, h3 {
-            margin-top: 20px;
-            color: #004d99;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
+
+        h2 {
             text-align: center;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #004d99;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .btn-back {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .btn-back:hover {
-            background-color: #218838;
-        }
-        .btn-primary {
+            font-weight: bold;
             margin-bottom: 20px;
+        }
+
+        .header {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header .row div {
+            font-weight: bold;
+        }
+
+        .header-logo {
+            width: 150px;
+            height: auto;
+        }
+
+        .text-center {
+            text-align:center;
+            padding: 40px;
+        }
+
+        .table-bordered th{
+            background-color:#1074c5;
+            vertical-align: middle;
+            text-align: center;
+        }
+        
+        .table-bordered td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .row p {
+            font-weight: bold;
+        }
+
+        .btn-secondary, .btn-primary {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-primary" onclick="window.print();" title="Imprimer">
-            <i class="fas fa-print"></i> Imprimer
-        </button>
-    </div>
-
     <div class="container">
-        <h2>Informations Générales</h2>
-        <table>
-            <tr><th>N° d'Ordre</th><td>{{ mission.id }}</td></tr>
-            <tr><th>Responsable</th><td>{{ mission.responsable_id.nom }} {{ mission.responsable_id.prenom }}</td></tr>
-            <tr><th>Fonction</th><td>{{ mission.responsable_id.fonction }}</td></tr>
-            <tr><th>Projet</th><td>{{ mission.projet }}</td></tr>
-            <tr><th>Chef de Projet</th><td>{{ mission.chef_de_projet }}</td></tr>
-            <tr><th>Date d'Enregistrement</th><td>{{ mission.date_enregistrement.strftime('%d/%m/%Y') }}</td></tr>
+        <!-- En-tête avec logo et informations -->
+        <div class="header">
+            <div class="row">
+                <div class="col-4">
+                    <img src="/static/images/BTSCOM.jpg" alt="Logo BTS" class="header-logo">
+                </div>
+                <div class="col-4 text-center">
+                    <h4>Ordre de Mission</h4>
+                </div>
+                <div class="col-4 text-end">
+                    <p>Référence : F43/P06</p>
+                    <p>Version : 04</p>
+                    <p>Date d'application : 23/02/2024</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations Générales -->
+        <table class="table table-bordered">
+            <tr>
+                <th>N° d'Ordre de Mission</th>
+                <td>{{ mission.id }}</td>
+                <th>Date</th>
+                <td>{{ mission.date_enregistrement.strftime('%d/%m/%Y') }}</td>
+            </tr>
+            <tr>
+                <th>Nom et Prénom</th>
+                <td>{{ mission.responsable_id.nom }} {{ mission.responsable_id.prenom }}</td>
+                <th>Chauffeur</th>
+                <td>{{ mission.chauffeur }}</td>
+            </tr>
+            <tr>
+                <th>Fonction</th>
+                <td>{{ mission.responsable_id.fonction }}</td>
+                <th>Marque</th>
+                <td>{{ mission.marque_vehicule }}</td>
+            </tr>
+            <tr>
+                <th>Projet & Chef de Projet</th>
+                <td>{{ mission.projet }}</td>
+                <th>Véhicule MAT</th>
+                <td>{{ mission.matricule_vehicule }}</td>
+            </tr>
         </table>
 
-        <h3>Véhicule</h3>
-        <table>
-            <tr><th>Chauffeur</th><td>{{ mission.chauffeur }}</td></tr>
-            <tr><th>Marque</th><td>{{ mission.marque_vehicule }}</td></tr>
-            <tr><th>Matricule</th><td>{{ mission.matricule_vehicule }}</td></tr>
+        <!-- Objet de la Mission -->
+        <h3>Objet de la Mission</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th>Objet</th>
+                <td>{{ mission.designation_travaux }}</td>
+            </tr>
+            <tr>
+                <th>Destination 1</th>
+                <td>Départ: {{ mission.ville_depart }} / Arrivée: {{ mission.ville_arrivee }}</td>
+            </tr>
+            <tr>
+                <th>Date de Début</th>
+                <td>{{ mission.date_debut.strftime('%d/%m/%Y') }}</td>
+                <th>Date de Fin</th>
+                <td>{{ mission.date_fin.strftime('%d/%m/%Y') }}</td>
+            </tr>
+            <tr>
+                <th>Nombre de Jours</th>
+                <td colspan="3">{{ mission.nombre_jours }}</td>
+            </tr>
         </table>
 
-        <h3>Objet de la Mission et Destination</h3>
-        <table>
-            <tr><th>Désignation des Travaux</th><td>{{ mission.designation_travaux }}</td></tr>
-            <tr><th>Site/Client</th><td>{{ mission.site_client }}</td></tr>
-            <tr><th>Ville de Départ</th><td>{{ mission.ville_depart }}</td></tr>
-            <tr><th>Ville d'Arrivée</th><td>{{ mission.ville_arrivee }}</td></tr>
-            <tr><th>Date de Début</th><td>{{ mission.date_debut.strftime('%d/%m/%Y') }}</td></tr>
-            <tr><th>Date de Fin</th><td>{{ mission.date_fin.strftime('%d/%m/%Y') }}</td></tr>
-            <tr><th>Nombre de Jours</th><td>{{ mission.nombre_jours }}</td></tr>
-            <tr><th>Recharge Gasoil</th><td>{{ mission.recharge_gasoil }} L</td></tr>
-        </table>
-
+        <!-- Informations sur l'Équipe -->
         <h3>Informations sur l'Équipe</h3>
-        <table>
+        <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Nom</th>
-                    <th>Prénom</th>
+                    <th>Nom et Prénom</th>
                     <th>Fonction</th>
-                    <th>Email</th>
+                    <th>Direction</th>
+                    <th>CIN</th>
+                    <th>TEL</th>
                 </tr>
             </thead>
             <tbody>
                 {% for membre in mission.equipe %}
                 <tr>
-                    <td>{{ membre.nom }}</td>
-                    <td>{{ membre.prenom }}</td>
+                    <td>{{ membre.nom }} {{ membre.prenom }}</td>
                     <td>{{ membre.fonction }}</td>
-                    <td>{{ membre.email }}</td>
+                    <td>{{ membre.direction }}</td>
+                    <td>{{ membre.cin }}</td>
+                    <td>{{ membre.tel }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <a href="{{ url_for('mes_missions') if not session.get('is_admin') else url_for('gererMissions') }}" class="btn btn-secondary">
-            Retour à la liste
-        </a>
-        
+        <!-- Signature -->
+        <div class="row mt-5">
+            <div class="col-6">
+                <p style="text-align: center;">Visa Chef de Projet</p>
+                <div style="border: 1px solid #000; height: 50px; margin: 10px;"></div>
+            </div>
+            <div class="col-6">
+                <p style="text-align: center;">Visa Responsable Ressources Humaines</p>
+                <div style="border: 1px solid #000; height: 50px; margin: 10px;"></div>
+            </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="text-center mt-3">
+            <a href="{{ url_for('mes_missions') if not session.get('is_admin') else url_for('gererMissions') }}" class="btn btn-secondary">
+                Retour à la liste
+            </a>
+            <button class="btn btn-primary" onclick="window.print()">Imprimer</button>
+        </div>
     </div>
 </body>
 </html>
