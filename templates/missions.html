@@ -163,7 +163,7 @@
                 <td class="status">{{ mission.etat }}</td>
                 <td class="actions">
                     {% if mission.etat == "en attente" %}
-                    <a href="{{ url_for('validate_mission', id=mission.id) }}" class="btn btn-success">
+                    <a href="{{ url_for('valider_mission', mission_id=mission.id) }}" class="btn btn-success">
                         <i class="fas fa-check"></i> Valider
                     </a>
                     {% endif %}
